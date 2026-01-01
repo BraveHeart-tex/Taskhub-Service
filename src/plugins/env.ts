@@ -9,10 +9,11 @@ export default fp(async (app) => {
     },
     schema: {
       type: 'object',
-      required: ['NODE_ENV'],
+      required: ['NODE_ENV', 'DATABASE_URL'],
       properties: {
         NODE_ENV: { type: 'string' },
         PORT: { type: 'number', default: 3000 },
+        DATABASE_URL: { type: 'string' },
       },
     },
   });
