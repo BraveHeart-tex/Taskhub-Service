@@ -3,6 +3,7 @@ import {
   generateSecureRandomString,
   hashPassword,
   hashSessionSecret,
+  verifyPassword,
 } from '../../auth/password';
 import { createSessionRepo } from '../../auth/session.repo';
 import { createUserRepo } from '../../auth/user.repo';
@@ -10,12 +11,12 @@ import { httpError } from '../../errors/http';
 import { apiErrorSchema } from '../../shared/schemas/error';
 import { loginBodySchema, userSchema } from './schema';
 
-const signUpRoute: FastifyPluginAsyncZod = async (app) => {
+const loginRoute: FastifyPluginAsyncZod = async (app) => {
   const sessionRepo = createSessionRepo(app.db);
   const userRepo = createUserRepo(app.db);
 
   app.post(
-    '/signup',
+    '/login',
     {
       schema: {
         body: loginBodySchema,
@@ -27,19 +28,25 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
     },
     async (request, response) => {
       const existingUser = await userRepo.findByEmail(request.body.email);
-      if (existingUser) {
+      if (!existingUser) {
         httpError.conflict(
           app,
-          'EMAIL_ALREADY_EXISTS',
-          'An account with this email already exists.'
+          'INVALID_CREDENTIALS',
+          'Invalid email or password'
         );
       }
 
-      const passwordHash = await hashPassword(request.body.password);
-      const user = await userRepo.create({
-        email: request.body.email,
-        passwordHash,
-      });
+      const isPasswordValid = await verifyPassword(
+        existingUser.passwordHash,
+        request.body.password
+      );
+      if (!isPasswordValid) {
+        httpError.conflict(
+          app,
+          'INVALID_CREDENTIALS',
+          'Invalid email or password'
+        );
+      }
 
       const sessionId = generateSecureRandomString();
       const sessionSecret = generateSecureRandomString();
@@ -50,7 +57,7 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
       await sessionRepo.create({
         id: sessionId,
         secretHash,
-        userId: user.id,
+        userId: existingUser.id,
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
       });
 
@@ -69,4 +76,4 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
   );
 };
 
-export default signUpRoute;
+export default loginRoute;
