@@ -1,17 +1,17 @@
 import { timingSafeEqual } from 'node:crypto';
 import { toAuthenticatedUser, toSessionContext } from './auth.mappers';
 import type { SessionValidationResult } from './auth.types';
-import { hashSessionSecret } from './session';
+import { getSessionExpiry, hashSessionSecret } from './session';
 import type { SessionRepo } from './session.repo';
 import type { UserRepo } from './user.repo';
 
 export function createAuthService(
   userRepo: UserRepo,
-  sessionRepo: SessionRepo
+  sessionRepo: SessionRepo,
 ) {
   return {
     async validateSession(
-      token: string | undefined
+      token: string | undefined,
     ): Promise<SessionValidationResult | null> {
       if (!token) return null;
 
@@ -41,9 +41,14 @@ export function createAuthService(
       const user = await userRepo.findById(session.userId);
       if (!user) return null;
 
+      const newExpiresAt = getSessionExpiry(30);
+      await sessionRepo.updateExpiresAt(session.id, newExpiresAt);
+
+      const updatedSession = { ...session, expiresAt: newExpiresAt };
+
       return {
         user: toAuthenticatedUser(user),
-        session: toSessionContext(session),
+        session: toSessionContext(updatedSession),
       };
     },
   };

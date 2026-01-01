@@ -15,6 +15,12 @@ export function createSessionRepo(db: Db) {
 
       return session ?? null;
     },
+    async updateExpiresAt(sessionId: string, expiresAt: Date) {
+      await db
+        .update(sessions)
+        .set({ expiresAt })
+        .where(eq(sessions.id, sessionId));
+    },
     async delete(sessionId: string) {
       await db.delete(sessions).where(eq(sessions.id, sessionId));
     },
