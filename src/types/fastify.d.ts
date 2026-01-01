@@ -1,12 +1,7 @@
 import 'fastify';
-import type {
-  FastifyPluginAsync,
-  FastifyPluginOptions,
-  RawServerBase,
-  RawServerDefault,
-} from 'fastify';
-import type { ZodTypeProvider } from 'fastify-type-provider-zod';
 import type { Db } from '../db/client';
+import type { AuthenticatedUser } from '../domain/authenticated-user';
+import type { SessionContext } from '../domain/session-context';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -18,6 +13,7 @@ declare module 'fastify' {
     };
   }
   interface FastifyRequest {
-    user: { id: string } | null;
+    user?: AuthenticatedUser;
+    session?: SessionContext;
   }
 }

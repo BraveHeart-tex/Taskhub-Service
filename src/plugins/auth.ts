@@ -1,18 +1,23 @@
 import fp from 'fastify-plugin';
+import { createAuthService } from '../auth/auth.service';
 import { createSessionRepo } from '../auth/session.repo';
+import { createUserRepo } from '../auth/user.repo';
 
 export default fp(async (app) => {
-  const sessionRepo = createSessionRepo(app.db);
+  const authService = createAuthService(
+    createUserRepo(app.db),
+    createSessionRepo(app.db)
+  );
 
-  app.decorateRequest('user', null);
+  app.decorate('auth', authService);
 
   app.addHook('preHandler', async (request) => {
-    const sessionId = request.cookies.session ?? null;
-    if (!sessionId) return;
+    const token = request.cookies.session_token;
+    const result = await authService.validateSession(token);
 
-    const session = await sessionRepo.findValid(sessionId);
-    if (!session) return;
-
-    request.user = { id: session.userId };
+    if (result) {
+      request.user = result.user;
+      request.session = result.session;
+    }
   });
 });

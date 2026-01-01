@@ -34,4 +34,8 @@ export const httpError = {
   notFound(app: FastifyInstance, message = 'Not found') {
     return throwHttpError(app, 404, 'NOT_FOUND', message);
   },
+
+  badRequest(app: FastifyInstance, message = 'Bad request') {
+    return throwHttpError(app, 400, 'BAD_REQUEST', message);
+  },
 };

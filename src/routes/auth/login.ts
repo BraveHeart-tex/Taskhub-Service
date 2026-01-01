@@ -26,13 +26,17 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
       },
     },
     async (request, response) => {
-      const existingUser = await userRepo.findByEmail(request.body.email);
-      if (!existingUser) {
+      if (request.user?.id || request.session?.id) {
         httpError.conflict(
           app,
-          'INVALID_CREDENTIALS',
-          'Invalid email or password'
+          'ALREADY_LOGGED_IN',
+          'User is already logged in'
         );
+      }
+
+      const existingUser = await userRepo.findByEmail(request.body.email);
+      if (!existingUser) {
+        httpError.badRequest(app, 'Invalid email or password');
       }
 
       const isPasswordValid = await verifyPassword(
@@ -40,11 +44,7 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
         request.body.password
       );
       if (!isPasswordValid) {
-        httpError.conflict(
-          app,
-          'INVALID_CREDENTIALS',
-          'Invalid email or password'
-        );
+        httpError.badRequest(app, 'Invalid email or password');
       }
 
       const sessionId = generateSecureRandomString();

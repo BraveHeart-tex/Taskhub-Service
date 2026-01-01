@@ -26,6 +26,14 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
       },
     },
     async (request, response) => {
+      if (request.user?.id || request.session?.id) {
+        httpError.conflict(
+          app,
+          'ALREADY_LOGGED_IN',
+          'User is already logged in'
+        );
+      }
+
       const existingUser = await userRepo.findByEmail(request.body.email);
       if (existingUser) {
         httpError.conflict(
