@@ -26,3 +26,21 @@ export class AlreadyLoggedInError extends DomainError {
     this.name = 'AlreadyLoggedInError';
   }
 }
+
+export class UnauthenticatedError extends DomainError {
+  readonly code = 'UNAUTHENTICATED';
+
+  constructor() {
+    super('Authentication required');
+    this.name = 'UnauthenticatedError';
+  }
+}
+
+export class UnauthorizedError extends DomainError {
+  readonly code = 'UNAUTHORIZED';
+
+  constructor() {
+    super('You are not authorized to perform this action');
+    this.name = 'UnauthorizedError';
+  }
+}

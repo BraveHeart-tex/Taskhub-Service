@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { Db } from '../db/client';
 import { type SessionCreateInput, sessions } from '../db/schema';
 
@@ -23,6 +23,11 @@ export function createSessionRepo(db: Db) {
     },
     async delete(sessionId: string) {
       await db.delete(sessions).where(eq(sessions.id, sessionId));
+    },
+    async deleteByIdAndUserId(sessionId: string, userId: string) {
+      await db
+        .delete(sessions)
+        .where(and(eq(sessions.id, sessionId), eq(sessions.userId, userId)));
     },
   };
 }

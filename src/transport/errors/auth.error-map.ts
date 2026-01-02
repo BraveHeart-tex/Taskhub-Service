@@ -1,9 +1,10 @@
-import type { DomainError } from '../../domain/shared/domain-error';
 import {
   AlreadyLoggedInError,
   EmailAlreadyExistsError,
   InvalidCredentialsError,
+  UnauthenticatedError,
 } from '../../domain/auth/auth.errors';
+import type { DomainError } from '../../domain/shared/domain-error';
 
 export const authErrorMap = new Map<
   new () => DomainError,
@@ -17,9 +18,6 @@ export const authErrorMap = new Map<
     EmailAlreadyExistsError,
     { status: 409, message: 'An account with this email already exists' },
   ],
-  [
-    AlreadyLoggedInError,
-    { status: 409, message: 'User is already logged in' },
-  ],
+  [AlreadyLoggedInError, { status: 409, message: 'User is already logged in' }],
+  [UnauthenticatedError, { status: 401, message: 'User is not authenticated' }],
 ]);
-

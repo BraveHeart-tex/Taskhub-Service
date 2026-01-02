@@ -6,7 +6,6 @@ export interface AuthService {
     user: AuthenticatedUser;
     session: SessionContext;
   } | null>;
-
   login(
     email: string,
     password: string
@@ -15,7 +14,6 @@ export interface AuthService {
     sessionId: string;
     sessionSecret: string;
   }>;
-
   signup(
     email: string,
     password: string
@@ -24,4 +22,5 @@ export interface AuthService {
     sessionId: string;
     sessionSecret: string;
   }>;
+  logout(sessionId: string, userId: string): Promise<void>;
 }

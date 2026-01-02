@@ -41,6 +41,7 @@ export function createAuthService(
       const computedHash = Buffer.from(await hashSessionSecret(secret));
 
       if (storedHash.length !== computedHash.length) {
+        await sessionRepo.delete(session.id);
         return null;
       }
 
@@ -122,6 +123,9 @@ export function createAuthService(
         sessionId,
         sessionSecret,
       };
+    },
+    async logout(sessionId: string, userId: string) {
+      await sessionRepo.deleteByIdAndUserId(sessionId, userId);
     },
   };
 }
