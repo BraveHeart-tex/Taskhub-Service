@@ -15,7 +15,7 @@ export function createSessionRepo(db: Db) {
 
       return session ?? null;
     },
-    async updateExpiresAt(sessionId: string, expiresAt: Date) {
+    async updateExpiresAt(sessionId: string, expiresAt: string) {
       await db
         .update(sessions)
         .set({ expiresAt })

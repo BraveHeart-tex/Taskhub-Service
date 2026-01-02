@@ -7,6 +7,10 @@ export default fp(async (app) => {
   app.setErrorHandler((err, request, reply) => {
     const requestId = request.id;
 
+    if (app.config.NODE_ENV === 'development') {
+      request.log.error(err);
+    }
+
     if (isFastifyHttpError(err)) {
       return reply.status(err.statusCode).send({
         error: {
@@ -32,7 +36,6 @@ export default fp(async (app) => {
       }
     }
 
-    // Truly unknown errors
     request.log.error(err);
 
     return reply.status(500).send({

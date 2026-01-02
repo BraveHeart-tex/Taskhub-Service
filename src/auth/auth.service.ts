@@ -32,7 +32,7 @@ export function createAuthService(
       const session = await sessionRepo.findById(sessionId);
       if (!session) return null;
 
-      if (session.expiresAt <= new Date()) {
+      if (new Date(session.expiresAt) <= new Date()) {
         await sessionRepo.delete(session.id);
         return null;
       }
@@ -53,9 +53,12 @@ export function createAuthService(
       if (!user) return null;
 
       const newExpiresAt = getSessionExpiry(30);
-      await sessionRepo.updateExpiresAt(session.id, newExpiresAt);
+      await sessionRepo.updateExpiresAt(session.id, newExpiresAt.toISOString());
 
-      const updatedSession = { ...session, expiresAt: newExpiresAt };
+      const updatedSession = {
+        ...session,
+        expiresAt: newExpiresAt.toISOString(),
+      };
 
       return {
         user: toAuthenticatedUser(user),
@@ -84,7 +87,7 @@ export function createAuthService(
         id: sessionId,
         secretHash,
         userId: user.id,
-        expiresAt: sessionExpiresAt,
+        expiresAt: sessionExpiresAt.toISOString(),
       });
 
       return {
@@ -115,7 +118,7 @@ export function createAuthService(
         id: sessionId,
         secretHash,
         userId: user.id,
-        expiresAt: getSessionExpiry(30),
+        expiresAt: getSessionExpiry(30).toISOString(),
       });
 
       return {

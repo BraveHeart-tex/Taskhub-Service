@@ -8,5 +8,5 @@ export const loginBodySchema = z.object({
 export const authenticatedUserSchema = z.object({
   id: z.uuid(),
   email: z.email(),
-  createdAt: z.date(),
+  createdAt: z.iso.datetime(),
 });
