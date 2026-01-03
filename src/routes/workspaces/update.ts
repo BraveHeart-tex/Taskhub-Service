@@ -7,7 +7,7 @@ import {
 } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
-  app.put(
+  app.patch(
     '/:id',
     {
       schema: {
