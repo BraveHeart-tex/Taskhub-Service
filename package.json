@@ -8,7 +8,7 @@
   "main": "app.ts",
   "lint-staged": {
     "*.{js,ts,json,cjs,mjs,md,css,tsx,jsx,json}": [
-      "biome check --write --no-errors-on-unmatched"
+      "biome check --write --no-errors-on-unmatched --fix"
     ]
   },
   "scripts": {

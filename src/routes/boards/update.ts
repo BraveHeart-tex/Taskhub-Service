@@ -1,12 +1,12 @@
-import { FastifyPluginAsyncZod } from "fastify-type-provider-zod";
-import { UnauthenticatedError } from "../../domain/auth/auth.errors";
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { UnauthenticatedError } from '../../domain/auth/auth.errors';
 
 const route: FastifyPluginAsyncZod = async (app) => {
-  app.post("/:id", (request,reply) => {
+  app.post('/:id', (request, reply) => {
     if (!request.user || !request.session?.id) {
-      throw new UnauthenticatedError()
+      throw new UnauthenticatedError();
     }
-  })
-}
+  });
+};
 
 export default route;

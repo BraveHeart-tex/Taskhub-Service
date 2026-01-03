@@ -1,6 +1,7 @@
 import type { Board, BoardCreateInput } from '../db/schema';
 import { UnauthorizedError } from '../domain/auth/auth.errors';
 import {
+  BoardNotFoundError,
   BoardTitleAlreadyExistsError,
   InvalidBoardTitleError,
 } from '../domain/board/board.errors';
@@ -37,6 +38,17 @@ export class BoardService {
 
     return this.boardRepo.create(values);
   }
-  async delete() {}
+  async delete(boardId: string, currentUserId: string): Promise<void> {
+    const board = await this.boardRepo.findById(boardId);
+    if (!board) {
+      throw new BoardNotFoundError();
+    }
+
+    if (board.createdBy !== currentUserId) {
+      throw new UnauthorizedError();
+    }
+
+    await this.boardRepo.delete(boardId);
+  }
   async update() {}
 }

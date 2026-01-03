@@ -1,9 +1,9 @@
-import z from "zod";
+import z from 'zod';
 
 export const createBoardBodySchema = z.object({
   workspaceId: z.uuid(),
   title: z.string().min(1).max(100),
-})
+});
 
 export const boardSchema = z.object({
   id: z.uuid(),
@@ -12,4 +12,8 @@ export const boardSchema = z.object({
   createdBy: z.uuid().nullable(),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
-})
+});
+
+export const deleteBoardParamsSchema = z.object({
+  id: z.uuid(),
+});
