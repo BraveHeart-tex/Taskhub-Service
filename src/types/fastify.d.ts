@@ -1,11 +1,10 @@
 import 'fastify';
 import type { AuthService } from '../auth/auth.service';
+import type { BoardService } from '../board/board.service';
 import type { Db } from '../db/client';
 import type { AuthenticatedUser } from '../domain/authenticated-user';
 import type { SessionContext } from '../domain/session-context';
 import type { WorkspaceService } from '../workspace/workspace.service';
-import type { BoardService } from '../board/board.service';
-
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -18,6 +17,9 @@ declare module 'fastify' {
       PORT: number;
       DATABASE_URL: string;
     };
+  }
+  interface FastifyContextConfig {
+    transactional?: boolean;
   }
   interface FastifyRequest {
     user?: AuthenticatedUser;

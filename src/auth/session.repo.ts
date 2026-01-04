@@ -1,16 +1,15 @@
 import { and, eq } from 'drizzle-orm';
-import type { Db } from '../db/client';
+import { useDb } from '../db/context';
 import { type SessionCreateInput, sessions } from '../db/schema';
 
 export class SessionRepo {
-  constructor(private readonly db: Db) {}
-
   async create(values: SessionCreateInput) {
-    await this.db.insert(sessions).values(values);
+    const db = useDb();
+    await db.insert(sessions).values(values);
   }
 
   async findById(sessionId: string) {
-    const [session] = await this.db
+    const [session] = await useDb()
       .select()
       .from(sessions)
       .where(eq(sessions.id, sessionId));
@@ -19,18 +18,21 @@ export class SessionRepo {
   }
 
   async updateExpiresAt(sessionId: string, expiresAt: string) {
-    await this.db
+    const db = useDb();
+    await db
       .update(sessions)
       .set({ expiresAt })
       .where(eq(sessions.id, sessionId));
   }
 
   async delete(sessionId: string) {
-    await this.db.delete(sessions).where(eq(sessions.id, sessionId));
+    const db = useDb();
+    await db.delete(sessions).where(eq(sessions.id, sessionId));
   }
 
   async deleteByIdAndUserId(sessionId: string, userId: string) {
-    await this.db
+    const db = useDb();
+    await db
       .delete(sessions)
       .where(and(eq(sessions.id, sessionId), eq(sessions.userId, userId)));
   }

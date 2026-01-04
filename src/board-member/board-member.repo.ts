@@ -1,10 +1,10 @@
-import type { Db } from '../db/client';
+import { useDb } from '../db/context';
 import { type BoardMemberCreateInput, boardMembers } from '../db/schema';
 
 export class BoardMemberRepository {
-  constructor(private readonly db: Db) {}
   async create(values: BoardMemberCreateInput) {
-    const [boardMember] = await this.db
+    const db = useDb();
+    const [boardMember] = await db
       .insert(boardMembers)
       .values(values)
       .returning();

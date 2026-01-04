@@ -10,7 +10,6 @@ import { WorkspaceNotFoundError } from '../domain/workspace/workspace.errors';
 import type { WorkspaceRepository } from '../workspace/workspace.repo';
 import type { BoardRepository } from './board.repo';
 
-// TODO: Handle transactions starting from create board
 export class BoardService {
   constructor(
     private readonly boardRepo: BoardRepository,

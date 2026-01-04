@@ -6,6 +6,9 @@ const route: FastifyPluginAsyncZod = async (app) => {
   app.post(
     '/',
     {
+      config: {
+        transactional: true,
+      },
       schema: {
         body: createBoardBodySchema,
         response: {

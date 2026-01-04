@@ -3,6 +3,6 @@ import { WorkspaceRepository } from '../workspace/workspace.repo';
 import { WorkspaceService } from '../workspace/workspace.service';
 
 export default fp(async (app) => {
-  const workspaceService = new WorkspaceService(new WorkspaceRepository(app.db));
+  const workspaceService = new WorkspaceService(new WorkspaceRepository());
   app.decorate('workspaceService', workspaceService);
 });

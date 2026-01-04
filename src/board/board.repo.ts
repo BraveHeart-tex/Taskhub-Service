@@ -1,5 +1,5 @@
 import { and, eq, getTableColumns } from 'drizzle-orm';
-import type { Db } from '../db/client';
+import { useDb } from '../db/context';
 import {
   type BoardCreateInput,
   type BoardUpdateInput,
@@ -8,9 +8,9 @@ import {
 } from '../db/schema';
 
 export class BoardRepository {
-  constructor(private readonly db: Db) {}
   async findById(boardId: string) {
-    const [board] = await this.db
+    const db = useDb();
+    const [board] = await db
       .select()
       .from(boards)
       .where(eq(boards.id, boardId));
@@ -18,7 +18,8 @@ export class BoardRepository {
     return board;
   }
   async findByWorkspaceAndTitle(workspaceId: string, title: string) {
-    const [board] = await this.db
+    const db = useDb();
+    const [board] = await db
       .select()
       .from(boards)
       .where(and(eq(boards.workspaceId, workspaceId), eq(boards.title, title)));
@@ -26,15 +27,18 @@ export class BoardRepository {
     return board;
   }
   async create(values: BoardCreateInput) {
-    const [board] = await this.db.insert(boards).values(values).returning();
+    const db = useDb();
+    const [board] = await db.insert(boards).values(values).returning();
 
     return board;
   }
   async delete(boardId: string) {
-    await this.db.delete(boards).where(eq(boards.id, boardId));
+    const db = useDb();
+    await db.delete(boards).where(eq(boards.id, boardId));
   }
   async update(boardId: string, changes: BoardUpdateInput) {
-    const [updatedBoard] = await this.db
+    const db = useDb();
+    const [updatedBoard] = await db
       .update(boards)
       .set(changes)
       .where(eq(boards.id, boardId))
@@ -43,7 +47,8 @@ export class BoardRepository {
     return updatedBoard;
   }
   async findByUserId(userId: string) {
-    return this.db
+    const db = useDb();
+    return db
       .select(getTableColumns(boards))
       .from(boards)
       .innerJoin(
