@@ -18,9 +18,6 @@ declare module 'fastify' {
       DATABASE_URL: string;
     };
   }
-  interface FastifyContextConfig {
-    transactional?: boolean;
-  }
   interface FastifyRequest {
     user?: AuthenticatedUser;
     session?: SessionContext;

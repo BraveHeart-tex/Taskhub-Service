@@ -2,12 +2,10 @@ import fp from 'fastify-plugin';
 import { AuthService } from '../auth/auth.service';
 import { SessionRepo } from '../auth/session.repo';
 import { UserRepo } from '../auth/user.repo';
+import { dbContext } from '../db/context';
 
 export default fp(async (app) => {
-  const authService = new AuthService(
-    new UserRepo(app.db),
-    new SessionRepo(app.db)
-  );
+  const authService = new AuthService(new UserRepo(), new SessionRepo());
 
   app.decorate('authService', authService);
 

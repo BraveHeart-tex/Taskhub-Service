@@ -9,7 +9,8 @@ export class SessionRepo {
   }
 
   async findById(sessionId: string) {
-    const [session] = await useDb()
+    const db = useDb();
+    const [session] = await db
       .select()
       .from(sessions)
       .where(eq(sessions.id, sessionId));

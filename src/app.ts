@@ -8,27 +8,27 @@ import {
   serializerCompiler,
   validatorCompiler,
 } from 'fastify-type-provider-zod';
+import { logger } from './logger';
 import dbPlugin from './plugins/db';
+import dbTransactionPlugin from './plugins/db-context';
 import envPlugin from './plugins/env';
 import errorHandlerPlugin from './plugins/error-handler';
 import swaggerPlugin from './plugins/swagger';
 
 export function buildApp() {
   const app = Fastify({
-    logger: true,
+    loggerInstance: logger,
   }).withTypeProvider<ZodTypeProvider>();
 
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
   app.register(sensible);
-
   app.register(envPlugin);
-  app.register(swaggerPlugin);
   app.register(dbPlugin);
-
+  app.register(dbTransactionPlugin);
+  app.register(swaggerPlugin);
   app.register(errorHandlerPlugin);
-
   app.register(cookie);
 
   app.register(autoload, {

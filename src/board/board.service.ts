@@ -1,5 +1,6 @@
 import type { BoardMemberRepository } from '../board-member/board-member.repo';
 import type { Board, BoardCreateInput } from '../db/schema';
+import { withTransaction } from '../db/transaction';
 import { UnauthorizedError } from '../domain/auth/auth.errors';
 import {
   BoardNotFoundError,
@@ -17,36 +18,38 @@ export class BoardService {
     private readonly workspaceRepo: WorkspaceRepository
   ) {}
   async create(values: BoardCreateInput): Promise<Board> {
-    const workspace = await this.workspaceRepo.findById(values.workspaceId);
-    if (!workspace) {
-      throw new WorkspaceNotFoundError();
-    }
+    return withTransaction(async () => {
+      const workspace = await this.workspaceRepo.findById(values.workspaceId);
+      if (!workspace) {
+        throw new WorkspaceNotFoundError();
+      }
 
-    if (workspace.ownerId !== values.createdBy) {
-      throw new UnauthorizedError();
-    }
+      if (workspace.ownerId !== values.createdBy) {
+        throw new UnauthorizedError();
+      }
 
-    const title = values.title.trim();
-    if (!title) throw new InvalidBoardTitleError();
+      const title = values.title.trim();
+      if (!title) throw new InvalidBoardTitleError();
 
-    const existing = await this.boardRepo.findByWorkspaceAndTitle(
-      values.workspaceId,
-      title
-    );
+      const existing = await this.boardRepo.findByWorkspaceAndTitle(
+        values.workspaceId,
+        title
+      );
 
-    if (existing) {
-      throw new BoardTitleAlreadyExistsError();
-    }
+      if (existing) {
+        throw new BoardTitleAlreadyExistsError();
+      }
 
-    const board = await this.boardRepo.create(values);
+      const board = await this.boardRepo.create(values);
 
-    await this.boardMemberRepo.create({
-      boardId: board.id,
-      userId: values.createdBy,
-      role: 'owner',
+      await this.boardMemberRepo.create({
+        boardId: board.id,
+        userId: values.createdBy,
+        role: 'owner',
+      });
+
+      return board;
     });
-
-    return board;
   }
   async delete(boardId: string, currentUserId: string): Promise<void> {
     const board = await this.boardRepo.findById(boardId);
