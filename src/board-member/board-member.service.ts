@@ -82,4 +82,40 @@ export class BoardMemberService {
       });
     });
   }
+  async deleteBoardMember(
+    currentUserId: string,
+    values: { boardId: string; userId: string }
+  ) {
+    return withTransaction(async () => {
+      const board = await this.boardRepo.findById(values.boardId);
+      if (!board) {
+        throw new BoardNotFoundError();
+      }
+
+      const currentUserBoardMemberInfo =
+        await this.boardMemberRepo.findByIdAndUserId(
+          values.boardId,
+          currentUserId
+        );
+
+      if (
+        !currentUserBoardMemberInfo ||
+        currentUserBoardMemberInfo?.role !== 'owner'
+      ) {
+        throw new UnauthorizedError();
+      }
+
+      const targetUserBoardMemberInfo =
+        await this.boardMemberRepo.findByIdAndUserId(
+          values.boardId,
+          values.userId
+        );
+
+      if (!targetUserBoardMemberInfo) {
+        throw new BoardMemberNotFoundError();
+      }
+
+      await this.boardMemberRepo.delete(targetUserBoardMemberInfo.memberId);
+    });
+  }
 }

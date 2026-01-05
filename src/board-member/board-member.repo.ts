@@ -42,6 +42,7 @@ export class BoardMemberRepository {
     const [boardMember] = await db
       .select({
         boardId: boardMembers.boardId,
+        memberId: boardMembers.id,
         user: {
           id: users.id,
           email: users.email,
@@ -56,5 +57,9 @@ export class BoardMemberRepository {
         and(eq(boardMembers.boardId, boardId), eq(boardMembers.userId, userId))
       );
     return boardMember;
+  }
+  async delete(id: string) {
+    const db = useDb();
+    await db.delete(boardMembers).where(eq(boardMembers.id, id));
   }
 }
