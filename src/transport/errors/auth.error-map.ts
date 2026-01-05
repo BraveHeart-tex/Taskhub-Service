@@ -4,8 +4,8 @@ import {
   InvalidCredentialsError,
   UnauthenticatedError,
   UnauthorizedError,
-} from '../../domain/auth/auth.errors';
-import type { DomainError } from '../../domain/shared/domain-error';
+} from '@/domain/auth/auth.errors';
+import type { DomainError } from '@/domain/shared/domain-error';
 
 export const authErrorMap = new Map<
   new () => DomainError,

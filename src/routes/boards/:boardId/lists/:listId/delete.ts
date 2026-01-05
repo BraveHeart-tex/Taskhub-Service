@@ -1,30 +1,25 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth } from '@/http/guards/require-auth';
-import { boardIdParamsSchema } from '../schema';
-import { createListBodySchema, listSchema } from './schema';
+import { deleteListParamsSchema } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
-  app.post(
+  app.delete(
     '/',
     {
       schema: {
-        params: boardIdParamsSchema,
-        body: createListBodySchema,
-        response: {
-          201: listSchema,
-        },
+        params: deleteListParamsSchema,
       },
     },
     async (request, reply) => {
       const { user } = requireAuth(request);
 
-      const result = await app.listService.createList({
+      await app.listService.deleteList({
         currentUserId: user.id,
+        listId: request.params.listId,
         boardId: request.params.boardId,
-        title: request.body.title,
       });
 
-      return reply.status(201).send(result);
+      return reply.status(204).send();
     }
   );
 };

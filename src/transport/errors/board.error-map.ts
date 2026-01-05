@@ -2,8 +2,8 @@ import {
   BoardNotFoundError,
   BoardTitleAlreadyExistsError,
   InvalidBoardTitleError,
-} from '../../domain/board/board.errors';
-import type { DomainError } from '../../domain/shared/domain-error';
+} from '@/domain/board/board.errors';
+import type { DomainError } from '@/domain/shared/domain-error';
 
 export const boardErrorMap = new Map<
   new () => DomainError,

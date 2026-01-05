@@ -2,6 +2,7 @@ import type { DomainError } from '../../domain/shared/domain-error';
 import { authErrorMap } from './auth.error-map';
 import { boardErrorMap } from './board.error-map';
 import { boardMemberErrorMap } from './board-member.error-map';
+import { listErrorMap } from './list.error-map';
 import { workspaceErrorMap } from './workspace.error-map';
 
 export const errorRegistry = new Map<
@@ -12,4 +13,5 @@ export const errorRegistry = new Map<
   ...workspaceErrorMap,
   ...boardErrorMap,
   ...boardMemberErrorMap,
+  ...listErrorMap,
 ]);

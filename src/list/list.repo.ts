@@ -18,4 +18,13 @@ export class ListRepository {
 
     return row?.max ?? null;
   }
+  async delete(listId: string) {
+    const db = useDb();
+    await db.delete(lists).where(eq(lists.id, listId));
+  }
+  async findById(listId: string) {
+    const db = useDb();
+    const [row] = await db.select().from(lists).where(eq(lists.id, listId));
+    return row;
+  }
 }

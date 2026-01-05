@@ -1,8 +1,8 @@
 import {
   BoardMemberAlreadyExistsError,
   BoardMemberNotFoundError,
-} from '../../domain/board/board-member/board-member.errors';
-import type { DomainError } from '../../domain/shared/domain-error';
+} from '@/domain/board/board-member/board-member.errors';
+import type { DomainError } from '@/domain/shared/domain-error';
 
 export const boardMemberErrorMap = new Map<
   new () => DomainError,

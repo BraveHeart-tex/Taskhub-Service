@@ -1,8 +1,8 @@
-import type { DomainError } from '../../domain/shared/domain-error';
+import type { DomainError } from '@/domain/shared/domain-error';
 import {
   WorkspaceNameAlreadyExistsError,
   WorkspaceNotFoundError,
-} from '../../domain/workspace/workspace.errors';
+} from '@/domain/workspace/workspace.errors';
 
 export const workspaceErrorMap = new Map<
   new () => DomainError,
