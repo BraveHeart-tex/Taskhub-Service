@@ -1,7 +1,7 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { requireAuth } from '../../../../http/guards/require-auth';
-import { boardIdPathParamsSchema } from '../schema';
-import { boardMemberCreateDtoSchema } from './schema';
+import { requireAuth } from '@/http/guards/require-auth';
+import { boardIdPathParamsSchema } from '../../schema';
+import { reOrderListsBodySchema } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.post(
@@ -9,15 +9,16 @@ const route: FastifyPluginAsyncZod = async (app) => {
     {
       schema: {
         params: boardIdPathParamsSchema,
-        body: boardMemberCreateDtoSchema,
+        body: reOrderListsBodySchema,
       },
     },
     async (request, reply) => {
       const { user } = requireAuth(request);
 
-      await app.boardMemberService.addMember(user.id, {
+      await app.listService.reorderLists({
+        currentUserId: user.id,
         boardId: request.params.boardId,
-        userId: request.body.userId,
+        items: request.body.lists,
       });
 
       return reply.status(204).send();

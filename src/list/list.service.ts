@@ -4,7 +4,9 @@ import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import { BoardNotFoundError } from '@/domain/board/board.errors';
 import {
+  DuplicateListIdError,
   InvalidListTitleError,
+  InvalidReorderPayloadError,
   ListNotFoundError,
 } from '@/domain/board/list/list.errors';
 import type { ListRepository } from './list.repo';
@@ -85,6 +87,52 @@ export class ListService {
       }
 
       return this.listRepository.update(listId, { title: nextTitle });
+    });
+  }
+  async reorderLists({
+    currentUserId,
+    boardId,
+    items,
+  }: {
+    currentUserId: string;
+    boardId: string;
+    items: { listId: string }[];
+  }) {
+    return withTransaction(async () => {
+      const board = await this.boardRepository.findById(boardId);
+      if (!board) throw new BoardNotFoundError();
+
+      const isMember = await this.boardMemberRepository.isMember(
+        boardId,
+        currentUserId
+      );
+      if (!isMember) throw new UnauthorizedError();
+
+      const lists = await this.listRepository.findByBoardId(boardId);
+      const listIds = new Set(lists.map((l) => l.id));
+
+      if (items.length !== lists.length) {
+        throw new InvalidReorderPayloadError();
+      }
+
+      const seen = new Set<string>();
+      for (const item of items) {
+        if (seen.has(item.listId)) {
+          throw new DuplicateListIdError();
+        }
+        if (!listIds.has(item.listId)) {
+          throw new ListNotFoundError();
+        }
+        seen.add(item.listId);
+      }
+
+      await this.listRepository.bulkUpdatePositions(
+        boardId,
+        items.map((item, index) => ({
+          listId: item.listId,
+          position: (index + 1) * LIST_POSITION_GAP,
+        }))
+      );
     });
   }
   async deleteList({

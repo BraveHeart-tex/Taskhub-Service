@@ -35,4 +35,44 @@ export class ListRepository {
     const db = useDb();
     await db.update(lists).set(values).where(eq(lists.id, listId));
   }
+  async bulkUpdatePositions(
+    boardId: string,
+    updates: {
+      listId: string;
+      position: number;
+    }[]
+  ) {
+    if (updates.length === 0) return;
+
+    const db = useDb();
+
+    const cases = sql.join(
+      updates.map(
+        (u) => sql`WHEN ${lists.id} = ${u.listId} THEN ${u.position}`
+      ),
+      sql` `
+    );
+
+    await db.execute(sql`
+      UPDATE ${lists}
+      SET position = CASE
+        ${cases}
+        ELSE position
+      END
+      WHERE
+        ${lists.boardId} = ${boardId}
+        AND ${lists.id} IN (${sql.join(
+          updates.map((u) => u.listId),
+          sql`, `
+        )})
+    `);
+  }
+  async findByBoardId(boardId: string) {
+    const db = useDb();
+    const rows = await db
+      .select()
+      .from(lists)
+      .where(eq(lists.boardId, boardId));
+    return rows;
+  }
 }

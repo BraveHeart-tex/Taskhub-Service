@@ -1,5 +1,5 @@
 import { z } from 'zod';
 
-export const boardIdParamsSchema = z.object({
+export const boardIdPathParamsSchema = z.object({
   boardId: z.uuid(),
 });

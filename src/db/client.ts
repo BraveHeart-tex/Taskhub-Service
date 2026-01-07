@@ -7,7 +7,7 @@ export function createDb(databaseUrl: string) {
     connectionString: databaseUrl,
   });
 
-  const db = drizzle(pool, { schema });
+  const db = drizzle(pool, { schema, logger: true });
 
   return { db, pool };
 }
