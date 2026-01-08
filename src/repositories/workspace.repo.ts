@@ -1,11 +1,11 @@
 import { and, eq } from 'drizzle-orm';
-import { useDb } from '../db/context';
+import { useDb } from '@/db/context';
 import {
   type Workspace,
   type WorkspaceCreateInput,
   type WorkspaceUpdateInput,
   workspaces,
-} from '../db/schema';
+} from '@/db/schema';
 
 export class WorkspaceRepository {
   async create(values: WorkspaceCreateInput) {

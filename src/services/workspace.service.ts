@@ -1,14 +1,14 @@
-import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 import type {
   Workspace,
   WorkspaceCreateInput,
   WorkspaceUpdateInput,
-} from '../db/schema';
-import { UnauthorizedError } from '../domain/auth/auth.errors';
+} from '@/db/schema';
+import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import {
   WorkspaceNameAlreadyExistsError,
   WorkspaceNotFoundError,
-} from '../domain/workspace/workspace.errors';
+} from '@/domain/workspace/workspace.errors';
+import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 
 export class WorkspaceService {
   constructor(private readonly workspaceRepo: WorkspaceRepository) {}

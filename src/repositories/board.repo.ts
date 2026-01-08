@@ -1,11 +1,11 @@
 import { and, eq, getTableColumns } from 'drizzle-orm';
-import { useDb } from '../db/context';
+import { useDb } from '@/db/context';
 import {
   type BoardCreateInput,
   type BoardUpdateInput,
   boardMembers,
   boards,
-} from '../db/schema';
+} from '@/db/schema';
 
 export class BoardRepository {
   async findById(boardId: string) {

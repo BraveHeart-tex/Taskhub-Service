@@ -1,6 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm';
-import { useDb } from '../db/context';
-import { type BoardMemberCreateInput, boardMembers, users } from '../db/schema';
+import { useDb } from '@/db/context';
+import { type BoardMemberCreateInput, boardMembers, users } from '@/db/schema';
 
 export class BoardMemberRepository {
   async create(values: BoardMemberCreateInput) {

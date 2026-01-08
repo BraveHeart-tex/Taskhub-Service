@@ -1,6 +1,6 @@
 import { eq, sql } from 'drizzle-orm';
-import { useDb } from '../db/context';
-import { type UserCreateInput, users } from '../db/schema';
+import { useDb } from '@/db/context';
+import { type UserCreateInput, users } from '@/db/schema';
 
 export class UserRepository {
   async create(input: UserCreateInput) {

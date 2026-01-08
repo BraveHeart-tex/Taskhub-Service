@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin';
-import { SessionRepo } from '../repositories/session.repo';
-import { UserRepository } from '../repositories/user.repo';
-import { AuthService } from '../services/auth.service';
+import { SessionRepo } from '@/repositories/session.repo';
+import { UserRepository } from '@/repositories/user.repo';
+import { AuthService } from '@/services/auth.service';
 
 export default fp(async (app) => {
   const authService = new AuthService(new UserRepository(), new SessionRepo());

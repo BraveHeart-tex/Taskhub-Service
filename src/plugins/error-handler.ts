@@ -1,7 +1,7 @@
 import fp from 'fastify-plugin';
+import { DomainError } from '@/domain/domain-error';
 import { isFastifyHttpError } from '@/domain/errors/is-http-error';
 import { errorRegistry } from '@/lib/transport/errors/error-registry';
-import { DomainError } from '../domain/domain-error';
 
 export default fp(async (app) => {
   app.setErrorHandler((err, request, reply) => {

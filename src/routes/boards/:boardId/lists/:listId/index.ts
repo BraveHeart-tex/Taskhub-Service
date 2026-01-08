@@ -24,6 +24,27 @@ const route: FastifyPluginAsyncZod = async (app) => {
       return reply.status(204).send();
     }
   );
+
+  app.delete(
+    '/',
+    {
+      schema: {
+        params: boardListPathParamsSchema,
+      },
+    },
+    async (request, reply) => {
+      const { user } = requireAuth(request);
+
+      await app.listService.deleteList({
+        currentUserId: user.id,
+        listId: request.params.listId,
+        boardId: request.params.boardId,
+      });
+
+      return reply.status(204).send();
+    }
+  );
 };
 
 export default route;
+

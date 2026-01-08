@@ -1,6 +1,6 @@
 import { and, eq } from 'drizzle-orm';
-import { useDb } from '../db/context';
-import { type SessionCreateInput, sessions } from '../db/schema';
+import { useDb } from '@/db/context';
+import { type SessionCreateInput, sessions } from '@/db/schema';
 
 export class SessionRepo {
   async create(values: SessionCreateInput) {

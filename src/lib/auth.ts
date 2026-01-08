@@ -1,6 +1,6 @@
-import type { Session, User } from '../db/schema';
-import type { AuthenticatedUser } from '../domain/authenticated-user';
-import type { SessionContext } from '../domain/session-context';
+import type { Session, User } from '@/db/schema';
+import type { AuthenticatedUser } from '@/domain/authenticated-user';
+import type { SessionContext } from '@/domain/session-context';
 
 export function toAuthenticatedUser(user: User): AuthenticatedUser {
   return {

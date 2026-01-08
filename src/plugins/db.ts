@@ -1,5 +1,5 @@
 import fp from 'fastify-plugin';
-import { createDb } from '../db/client';
+import { createDb } from '@/db/client';
 
 export default fp(async (app) => {
   const { db, pool } = createDb(app.config.DATABASE_URL);
