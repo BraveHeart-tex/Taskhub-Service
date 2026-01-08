@@ -1,5 +1,6 @@
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
+import { DrizzleLogger } from './logger';
 import * as schema from './schema';
 
 export function createDb(databaseUrl: string) {
@@ -7,7 +8,8 @@ export function createDb(databaseUrl: string) {
     connectionString: databaseUrl,
   });
 
-  const db = drizzle(pool, { schema, logger: true });
+  const logger = new DrizzleLogger();
+  const db = drizzle(pool, { schema, logger });
 
   return { db, pool };
 }
