@@ -1,8 +1,8 @@
 import { and, eq, getTableColumns } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import {
-  type BoardCreateInput,
-  type BoardUpdateInput,
+  type BoardInsert,
+  type BoardUpdate,
   boardMembers,
   boards,
 } from '@/db/schema';
@@ -26,7 +26,7 @@ export class BoardRepository {
 
     return board;
   }
-  async create(values: BoardCreateInput) {
+  async create(values: BoardInsert) {
     const db = useDb();
     const [board] = await db.insert(boards).values(values).returning();
 
@@ -36,7 +36,7 @@ export class BoardRepository {
     const db = useDb();
     await db.delete(boards).where(eq(boards.id, boardId));
   }
-  async update(boardId: string, changes: BoardUpdateInput) {
+  async update(boardId: string, changes: BoardUpdate) {
     const db = useDb();
     const [updatedBoard] = await db
       .update(boards)

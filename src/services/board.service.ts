@@ -1,4 +1,4 @@
-import type { Board, BoardCreateInput } from '@/db/schema';
+import type { BoardInsert, BoardRow } from '@/db/schema';
 import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import {
@@ -17,7 +17,7 @@ export class BoardService {
     private readonly boardMemberRepo: BoardMemberRepository,
     private readonly workspaceRepo: WorkspaceRepository
   ) {}
-  async create(values: BoardCreateInput): Promise<Board> {
+  async create(values: BoardInsert): Promise<BoardRow> {
     return withTransaction(async () => {
       const workspace = await this.workspaceRepo.findById(values.workspaceId);
       if (!workspace) {
@@ -91,7 +91,7 @@ export class BoardService {
 
     return this.boardRepo.update(boardId, { title });
   }
-  async getUserBoards(userId: string): Promise<Board[]> {
+  async getUserBoards(userId: string): Promise<BoardRow[]> {
     const boards = await this.boardRepo.findByUserId(userId);
     return boards;
   }

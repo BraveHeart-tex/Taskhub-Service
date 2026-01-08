@@ -1,9 +1,9 @@
 import { eq, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
-import { type UserCreateInput, users } from '@/db/schema';
+import { type UserInsert, users } from '@/db/schema';
 
 export class UserRepository {
-  async create(input: UserCreateInput) {
+  async create(input: UserInsert) {
     const db = useDb();
     const [result] = await db.insert(users).values(input).returning();
     return result;

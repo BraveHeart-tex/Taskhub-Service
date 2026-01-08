@@ -1,14 +1,10 @@
 import { sql } from 'drizzle-orm';
 import { eq } from 'drizzle-orm/gel-core/expressions';
 import { useDb } from '@/db/context';
-import {
-  type ListRowCreateInput,
-  type ListRowUpdateInput,
-  lists,
-} from '@/db/schema';
+import { type ListCreate, type ListUpdate, lists } from '@/db/schema';
 
 export class ListRepository {
-  async create(values: ListRowCreateInput) {
+  async create(values: ListCreate) {
     const db = useDb();
     const [result] = await db.insert(lists).values(values).returning();
     return result;
@@ -31,7 +27,7 @@ export class ListRepository {
     const [row] = await db.select().from(lists).where(eq(lists.id, listId));
     return row;
   }
-  async update(listId: string, values: Partial<ListRowUpdateInput>) {
+  async update(listId: string, values: Partial<ListUpdate>) {
     const db = useDb();
     await db.update(lists).set(values).where(eq(lists.id, listId));
   }

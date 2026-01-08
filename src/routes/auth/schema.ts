@@ -17,5 +17,3 @@ export const signUpBodySchema = z.object({
   password: z.string().min(8).max(256),
   fullName: z.string().min(2).max(100),
 });
-
-export type SignUpInput = z.infer<typeof signUpBodySchema>;

@@ -1,20 +1,20 @@
 import { and, eq } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import {
-  type Workspace,
-  type WorkspaceCreateInput,
-  type WorkspaceUpdateInput,
+  type WorkspaceInsert,
+  type WorkspaceRow,
+  type WorkspaceUpdate,
   workspaces,
 } from '@/db/schema';
 
 export class WorkspaceRepository {
-  async create(values: WorkspaceCreateInput) {
+  async create(values: WorkspaceInsert) {
     const db = useDb();
     const [result] = await db.insert(workspaces).values(values).returning();
     return result;
   }
 
-  async update(id: Workspace['id'], changes: WorkspaceUpdateInput) {
+  async update(id: WorkspaceRow['id'], changes: WorkspaceUpdate) {
     const db = useDb();
     const [result] = await db
       .update(workspaces)
@@ -25,12 +25,12 @@ export class WorkspaceRepository {
     return result;
   }
 
-  async delete(id: Workspace['id']) {
+  async delete(id: WorkspaceRow['id']) {
     const db = useDb();
     await db.delete(workspaces).where(eq(workspaces.id, id)).returning();
   }
 
-  async findById(id: Workspace['id']) {
+  async findById(id: WorkspaceRow['id']) {
     const db = useDb();
     const [result] = await db
       .select()
@@ -39,7 +39,7 @@ export class WorkspaceRepository {
     return result;
   }
 
-  async findByOwnerAndName(ownerId: Workspace['ownerId'], name: string) {
+  async findByOwnerAndName(ownerId: WorkspaceRow['ownerId'], name: string) {
     const db = useDb();
     const [result] = await db
       .select()

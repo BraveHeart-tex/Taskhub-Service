@@ -1,7 +1,7 @@
 import type {
-  Workspace,
-  WorkspaceCreateInput,
-  WorkspaceUpdateInput,
+  WorkspaceInsert,
+  WorkspaceRow,
+  WorkspaceUpdate,
 } from '@/db/schema';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import {
@@ -13,7 +13,7 @@ import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 export class WorkspaceService {
   constructor(private readonly workspaceRepo: WorkspaceRepository) {}
 
-  async create(values: WorkspaceCreateInput) {
+  async create(values: WorkspaceInsert) {
     const existing = await this.workspaceRepo.findByOwnerAndName(
       values.ownerId,
       values.name
@@ -31,9 +31,9 @@ export class WorkspaceService {
     changes,
     currentUserId,
   }: {
-    workspaceId: Workspace['id'];
-    changes: WorkspaceUpdateInput;
-    currentUserId: Workspace['ownerId'];
+    workspaceId: WorkspaceRow['id'];
+    changes: WorkspaceUpdate;
+    currentUserId: WorkspaceRow['ownerId'];
   }) {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 
@@ -60,8 +60,8 @@ export class WorkspaceService {
   }
 
   async delete(
-    currentUserId: Workspace['ownerId'],
-    workspaceId: Workspace['id']
+    currentUserId: WorkspaceRow['ownerId'],
+    workspaceId: WorkspaceRow['id']
   ) {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 

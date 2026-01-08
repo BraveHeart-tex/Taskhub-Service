@@ -1,9 +1,9 @@
 import { and, eq, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
-import { type BoardMemberCreateInput, boardMembers, users } from '@/db/schema';
+import { type BoardMemberInsert, boardMembers, users } from '@/db/schema';
 
 export class BoardMemberRepository {
-  async create(values: BoardMemberCreateInput) {
+  async create(values: BoardMemberInsert) {
     const db = useDb();
     const [boardMember] = await db
       .insert(boardMembers)

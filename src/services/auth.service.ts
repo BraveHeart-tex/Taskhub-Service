@@ -13,7 +13,7 @@ import {
 } from '@/lib/session';
 import type { SessionRepo } from '@/repositories/session.repo';
 import type { UserRepository } from '@/repositories/user.repo';
-import type { SignUpInput } from '@/routes/auth/schema';
+import type { SignUpInput } from '@/types/auth.types';
 
 export class AuthService {
   constructor(

@@ -1,3 +1,3 @@
-import type { User } from '@/db/schema';
+import type { UserRow } from '@/db/schema';
 
-export type AuthenticatedUser = Omit<User, 'passwordHash'>;
+export type AuthenticatedUser = Omit<UserRow, 'passwordHash'>;

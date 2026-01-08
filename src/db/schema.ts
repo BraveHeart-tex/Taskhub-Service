@@ -119,25 +119,20 @@ export const lists = pgTable(
   ]
 );
 
-export type User = typeof users.$inferSelect;
-export type Session = typeof sessions.$inferSelect;
-export type Workspace = typeof workspaces.$inferSelect;
-export type Board = typeof boards.$inferSelect;
-export type BoardMember = typeof boardMembers.$inferSelect;
+export type UserRow = typeof users.$inferSelect;
+export type SessionRow = typeof sessions.$inferSelect;
+export type WorkspaceRow = typeof workspaces.$inferSelect;
+export type BoardRow = typeof boards.$inferSelect;
+export type BoardMemberRow = typeof boardMembers.$inferSelect;
 export type ListRow = typeof lists.$inferSelect;
 
-export type UserCreateInput = typeof users.$inferInsert;
-
-export type SessionCreateInput = typeof sessions.$inferInsert;
-
-export type WorkspaceCreateInput = typeof workspaces.$inferInsert;
-export type WorkspaceUpdateInput = Pick<Workspace, 'name'>;
-
-export type BoardCreateInput = typeof boards.$inferInsert;
-export type BoardUpdateInput = Pick<Board, 'title'>;
-
-export type BoardMemberCreateInput = typeof boardMembers.$inferInsert;
-export type BoardMemberUpdateInput = Pick<BoardMember, 'role'>;
-
-export type ListRowCreateInput = typeof lists.$inferInsert;
-export type ListRowUpdateInput = Pick<ListRow, 'title'>;
+export type UserInsert = typeof users.$inferInsert;
+export type SessionInsert = typeof sessions.$inferInsert;
+export type WorkspaceInsert = typeof workspaces.$inferInsert;
+export type WorkspaceUpdate = Pick<WorkspaceRow, 'name'>;
+export type BoardInsert = typeof boards.$inferInsert;
+export type BoardUpdate = Pick<BoardRow, 'title'>;
+export type BoardMemberInsert = typeof boardMembers.$inferInsert;
+export type BoardMemberUpdate = Pick<BoardMemberRow, 'role'>;
+export type ListCreate = typeof lists.$inferInsert;
+export type ListUpdate = Pick<ListRow, 'title'>;

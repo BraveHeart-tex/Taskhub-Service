@@ -1,8 +1,8 @@
-import type { Session, User } from '@/db/schema';
+import type { SessionRow, UserRow } from '@/db/schema';
 import type { AuthenticatedUser } from '@/domain/authenticated-user';
 import type { SessionContext } from '@/domain/session-context';
 
-export function toAuthenticatedUser(user: User): AuthenticatedUser {
+export function toAuthenticatedUser(user: UserRow): AuthenticatedUser {
   return {
     id: user.id,
     fullName: user.fullName,
@@ -12,7 +12,7 @@ export function toAuthenticatedUser(user: User): AuthenticatedUser {
   };
 }
 
-export function toSessionContext(session: Session): SessionContext {
+export function toSessionContext(session: SessionRow): SessionContext {
   return {
     id: session.id,
     userId: session.userId,
