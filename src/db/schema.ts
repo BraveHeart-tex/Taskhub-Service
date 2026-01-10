@@ -1,6 +1,7 @@
 import { sql } from 'drizzle-orm';
 import {
   doublePrecision,
+  index,
   pgEnum,
   pgTable,
   text,
@@ -9,61 +10,80 @@ import {
 } from 'drizzle-orm/pg-core';
 import { customTimestamp } from './timestamp';
 
-export const users = pgTable('users', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  fullName: text('full_name').notNull().default(''),
-  email: text('email').notNull().unique(),
-  passwordHash: text('password_hash').notNull(),
-  createdAt: customTimestamp('created_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull(),
-  updatedAt: customTimestamp('updated_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull()
-    .$onUpdateFn(() => sql`NOW()`),
-});
+export const users = pgTable(
+  'users',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    fullName: text('full_name').notNull().default(''),
+    email: text('email').notNull().unique(),
+    passwordHash: text('password_hash').notNull(),
+    createdAt: customTimestamp('created_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull(),
+    updatedAt: customTimestamp('updated_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull()
+      .$onUpdateFn(() => sql`NOW()`),
+  },
+  (table) => [uniqueIndex('users_email_idx').on(table.email)]
+);
 
-export const sessions = pgTable('sessions', {
-  id: text('id').primaryKey(),
-  userId: uuid('user_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  secretHash: text('secret_hash').notNull(),
-  expiresAt: customTimestamp('expires_at').notNull(),
-});
+export const sessions = pgTable(
+  'sessions',
+  {
+    id: text('id').primaryKey(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    secretHash: text('secret_hash').notNull(),
+    expiresAt: customTimestamp('expires_at').notNull(),
+  },
+  (table) => [index('sessions_user_id_idx').on(table.userId)]
+);
 
-export const workspaces = pgTable('workspaces', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  name: text('name').notNull(),
-  ownerId: uuid('owner_id')
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  createdAt: customTimestamp('created_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull(),
-  updatedAt: customTimestamp('updated_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull()
-    .$onUpdateFn(() => sql`NOW()`),
-});
+export const workspaces = pgTable(
+  'workspaces',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    name: text('name').notNull(),
+    ownerId: uuid('owner_id')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: customTimestamp('created_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull(),
+    updatedAt: customTimestamp('updated_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull()
+      .$onUpdateFn(() => sql`NOW()`),
+  },
+  (table) => [
+    index('workspaces_owner_id_idx').on(table.ownerId),
+    index('workspaces_owner_id_name_idx').on(table.ownerId, table.name),
+  ]
+);
 
-export const boards = pgTable('boards', {
-  id: uuid('id').primaryKey().defaultRandom(),
-  workspaceId: uuid('workspace_id')
-    .notNull()
-    .references(() => workspaces.id, { onDelete: 'cascade' }),
-  title: text('title').notNull(),
-  createdBy: uuid('created_by')
-    .notNull()
-    .references(() => users.id, { onDelete: 'set null' }),
-  createdAt: customTimestamp('created_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull(),
-  updatedAt: customTimestamp('updated_at')
-    .$defaultFn(() => sql`NOW()`)
-    .notNull()
-    .$onUpdateFn(() => sql`NOW()`),
-});
+export const boards = pgTable(
+  'boards',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    workspaceId: uuid('workspace_id')
+      .notNull()
+      .references(() => workspaces.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    createdBy: uuid('created_by')
+      .notNull()
+      .references(() => users.id, { onDelete: 'set null' }),
+    createdAt: customTimestamp('created_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull(),
+    updatedAt: customTimestamp('updated_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull()
+      .$onUpdateFn(() => sql`NOW()`),
+  },
+  (table) => [index('boards_workspace_id').on(table.workspaceId)]
+);
 
 const boardMemberRoleEnum = pgEnum('board_member_role', ['owner', 'member']);
 
@@ -112,10 +132,39 @@ export const lists = pgTable(
       .$onUpdateFn(() => sql`NOW()`),
   },
   (table) => [
+    index('lists_board_id').on(table.boardId),
     uniqueIndex('lists_board_id_position_key').on(
       table.boardId,
       table.position
     ),
+  ]
+);
+
+export const cards = pgTable(
+  'cards',
+  {
+    id: uuid('id').primaryKey().defaultRandom(),
+    listId: uuid('list_id')
+      .notNull()
+      .references(() => lists.id, { onDelete: 'cascade' }),
+    title: text('title').notNull(),
+    description: text('description'),
+    position: doublePrecision('position').notNull(),
+    createdBy: uuid('created_by')
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    createdAt: customTimestamp('created_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull(),
+    updatedAt: customTimestamp('updated_at')
+      .$defaultFn(() => sql`NOW()`)
+      .notNull()
+      .$onUpdateFn(() => sql`NOW()`),
+  },
+  (table) => [
+    index('cards_list_id').on(table.listId),
+    uniqueIndex('cards_list_id_position_key').on(table.listId, table.position),
+    index('cards_created_by').on(table.createdBy),
   ]
 );
 
@@ -125,14 +174,21 @@ export type WorkspaceRow = typeof workspaces.$inferSelect;
 export type BoardRow = typeof boards.$inferSelect;
 export type BoardMemberRow = typeof boardMembers.$inferSelect;
 export type ListRow = typeof lists.$inferSelect;
+export type CardRow = typeof cards.$inferSelect;
 
 export type UserInsert = typeof users.$inferInsert;
 export type SessionInsert = typeof sessions.$inferInsert;
+
 export type WorkspaceInsert = typeof workspaces.$inferInsert;
 export type WorkspaceUpdate = Pick<WorkspaceRow, 'name'>;
+
 export type BoardInsert = typeof boards.$inferInsert;
 export type BoardUpdate = Pick<BoardRow, 'title'>;
+
 export type BoardMemberInsert = typeof boardMembers.$inferInsert;
 export type BoardMemberUpdate = Pick<BoardMemberRow, 'role'>;
+
 export type ListCreate = typeof lists.$inferInsert;
 export type ListUpdate = Pick<ListRow, 'title'>;
+
+export type CardCreate = typeof cards.$inferInsert;

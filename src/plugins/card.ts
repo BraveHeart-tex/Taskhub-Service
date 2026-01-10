@@ -1,0 +1,16 @@
+import fp from 'fastify-plugin';
+import { BoardRepository } from '@/repositories/board.repo';
+import { BoardMemberRepository } from '@/repositories/board-member.repo';
+import { CardRepository } from '@/repositories/card.repo';
+import { ListRepository } from '@/repositories/list.repo';
+import { CardService } from '@/services/card.service';
+
+export default fp(async (app) => {
+  const cardService = new CardService(
+    new BoardRepository(),
+    new ListRepository(),
+    new BoardMemberRepository(),
+    new CardRepository()
+  );
+  app.decorate('cardService', cardService);
+});
