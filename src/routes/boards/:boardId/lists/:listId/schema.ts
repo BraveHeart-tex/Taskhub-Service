@@ -6,5 +6,5 @@ export const boardListPathParamsSchema = z.object({
 });
 
 export const updateBoardListSchema = z.object({
-  title: z.string().min(1).max(100),
+  title: z.string().min(1).max(256),
 });

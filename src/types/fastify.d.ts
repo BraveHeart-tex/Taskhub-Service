@@ -7,6 +7,7 @@ import type { BoardMemberService } from '@/services/board-member.service';
 import type { ListService } from '@/services/list.service';
 import type { WorkspaceService } from '@/services/workspace.service';
 import 'fastify';
+import type { CardService } from '@/services/card.service';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -14,6 +15,7 @@ declare module 'fastify' {
     authService: AuthService;
     boardService: BoardService;
     boardMemberService: BoardMemberService;
+    cardService: CardService;
     workspaceService: WorkspaceService;
     listService: ListService;
     config: {
