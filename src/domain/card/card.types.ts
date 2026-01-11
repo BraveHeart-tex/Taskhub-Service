@@ -21,3 +21,12 @@ export interface UpdateCardParams {
   title?: string;
   description?: string;
 }
+
+export interface MoveCardParams {
+  currentUserId: string;
+  boardId: string;
+  cardId: string;
+  targetListId: string;
+  beforeCardId?: string;
+  afterCardId?: string;
+}

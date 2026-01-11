@@ -30,13 +30,13 @@ export const cardUpdateBodySchema = z
     }
   });
 
-export const cardDtoSchema = z.object({
-  id: z.uuid(),
-  listId: z.uuid(),
-  title: z.string().min(MIN_CARD_TITLE_LENGTH).max(MAX_CARD_TITLE_LENGTH),
-  description: z.string().max(MAX_CARD_DESCRIPTION_LENGTH).nullable(),
-  position: z.string(),
-  createdBy: z.uuid(),
-  createdAt: z.iso.datetime(),
-  updatedAt: z.iso.datetime(),
+export const moveCardParamsSchema = z.object({
+  boardId: z.uuid(),
+  cardId: z.uuid(),
+});
+
+export const moveCardBodySchema = z.object({
+  targetListId: z.uuid(),
+  beforeCardId: z.uuid().optional(),
+  afterCardId: z.uuid().optional(),
 });

@@ -1,4 +1,4 @@
-import { asc, eq, sql } from 'drizzle-orm';
+import { asc, desc, eq, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import { type CardCreate, type CardUpdate, cards } from '@/db/schema';
 import { CARD_POSITION_GAP } from '@/domain/card/card.constants';
@@ -25,6 +25,34 @@ export class CardRepository {
       .limit(1);
 
     return row?.position ?? null;
+  }
+  async getMaxPositionInList(listId: string): Promise<string | null> {
+    const db = useDb();
+    const [row] = await db
+      .select({ position: cards.position })
+      .from(cards)
+      .where(eq(cards.listId, listId))
+      .orderBy(desc(cards.position))
+      .limit(1);
+    return row?.position ?? null;
+  }
+  async getPositionInList(
+    cardId: string,
+    listId: string
+  ): Promise<string | null> {
+    const db = useDb();
+    const [row] = await db
+      .select({ position: cards.position })
+      .from(cards)
+      .where(eq(cards.id, cardId))
+      .limit(1);
+
+    if (!row) return null;
+
+    const card = await this.findById(cardId);
+    if (!card || card.listId !== listId) return null;
+
+    return row.position;
   }
   async rebalancePositions(listId: string) {
     const db = useDb();
@@ -55,6 +83,15 @@ export class CardRepository {
   async delete(cardId: string) {
     const db = useDb();
     await db.delete(cards).where(eq(cards.id, cardId));
+  }
+  async move(cardId: string, input: { listId: string; position: string }) {
+    const db = useDb();
+    const [card] = await db
+      .update(cards)
+      .set(input)
+      .where(eq(cards.id, cardId))
+      .returning();
+    return card;
   }
   async update(cardId: string, values: CardUpdate) {
     const db = useDb();

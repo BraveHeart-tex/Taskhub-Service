@@ -1,11 +1,8 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
-import {
-  cardDtoSchema,
-  cardRouteParamsSchema,
-  cardUpdateBodySchema,
-} from './schema';
+import { cardDtoSchema } from '../schema';
+import { cardRouteParamsSchema, cardUpdateBodySchema } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.delete(

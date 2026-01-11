@@ -5,9 +5,13 @@ import { CardNotFoundError } from '@/domain/card/card.errors';
 import type {
   CreateCardParams,
   DeleteCardParams,
+  MoveCardParams,
   UpdateCardParams,
 } from '@/domain/card/card.types';
-import { computeInsertAtTopPosition } from '@/domain/card/positioning';
+import {
+  computeInsertAtTopPosition,
+  computeInsertBetweenPositions,
+} from '@/domain/card/positioning';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { CardRepository } from '@/repositories/card.repo';
 import type { ListRepository } from '@/repositories/list.repo';
@@ -124,6 +128,92 @@ export class CardService {
         title: title ?? '',
         description: description ?? null,
       });
+    });
+  }
+  async moveCard({
+    currentUserId,
+    boardId,
+    cardId,
+    targetListId,
+    beforeCardId,
+    afterCardId,
+  }: MoveCardParams) {
+    return withTransaction(async () => {
+      const isMember = await this.boardMemberRepository.isMember(
+        boardId,
+        currentUserId
+      );
+      if (!isMember) {
+        throw new BoardMemberNotFoundError();
+      }
+
+      const card = await this.cardRepository.findById(cardId);
+      if (!card) {
+        throw new CardNotFoundError();
+      }
+
+      const sourceListId = card.listId;
+
+      const targetList = await this.listRepository.findById(targetListId);
+      if (!targetList || targetList.boardId !== boardId) {
+        throw new ListNotFoundError();
+      }
+
+      await this.listRepository.lockById(sourceListId);
+      if (sourceListId !== targetListId) {
+        await this.listRepository.lockById(targetListId);
+      }
+
+      const beforePosition = beforeCardId
+        ? await this.cardRepository.getPositionInList(
+            beforeCardId,
+            targetListId
+          )
+        : null;
+
+      const afterPosition = afterCardId
+        ? await this.cardRepository.getPositionInList(afterCardId, targetListId)
+        : null;
+
+      if (beforeCardId && beforePosition === null) {
+        throw new CardNotFoundError();
+      }
+      if (afterCardId && afterPosition === null) {
+        throw new CardNotFoundError();
+      }
+
+      let { position, needsRebalance } = computeInsertBetweenPositions({
+        before: beforePosition,
+        after: afterPosition,
+      });
+
+      if (needsRebalance) {
+        await this.cardRepository.rebalancePositions(targetListId);
+
+        const refreshedBefore = beforeCardId
+          ? await this.cardRepository.getPositionInList(
+              beforeCardId,
+              targetListId
+            )
+          : null;
+
+        const refreshedAfter = afterCardId
+          ? await this.cardRepository.getPositionInList(
+              afterCardId,
+              targetListId
+            )
+          : null;
+
+        ({ position } = computeInsertBetweenPositions({
+          before: refreshedBefore,
+          after: refreshedAfter,
+        }));
+
+        return this.cardRepository.move(cardId, {
+          listId: targetListId,
+          position: position.toString(),
+        });
+      }
     });
   }
 }
