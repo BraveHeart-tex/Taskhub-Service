@@ -1,6 +1,5 @@
 import fp from 'fastify-plugin';
 import { DomainError } from '@/domain/domain-error';
-import { isFastifyHttpError } from '@/domain/errors/is-http-error';
 import { errorRegistry } from '@/lib/transport/errors/error-registry';
 
 export default fp(async (app) => {
@@ -9,15 +8,6 @@ export default fp(async (app) => {
 
     if (app.config.NODE_ENV === 'development') {
       request.log.error(err);
-    }
-
-    if (isFastifyHttpError(err)) {
-      return reply.status(err.statusCode).send({
-        error: {
-          ...err.error,
-          requestId,
-        },
-      });
     }
 
     if (err instanceof DomainError) {
