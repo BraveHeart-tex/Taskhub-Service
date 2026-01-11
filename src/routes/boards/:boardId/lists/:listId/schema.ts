@@ -10,5 +10,9 @@ export const listRouteParamsSchema = z.object({
 });
 
 export const updateBoardListSchema = z.object({
-  title: z.string().min(MIN_BOARD_TITLE_LENGTH).max(MAX_BOARD_TITLE_LENGTH),
+  title: z
+    .string()
+    .trim()
+    .min(MIN_BOARD_TITLE_LENGTH)
+    .max(MAX_BOARD_TITLE_LENGTH),
 });

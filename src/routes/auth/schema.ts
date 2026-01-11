@@ -8,18 +8,26 @@ import {
 
 export const loginBodySchema = z.object({
   email: z.email(),
-  password: z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH),
+  password: z.string().trim().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH),
 });
 
 export const authenticatedUserSchema = z.object({
   id: z.uuid(),
   email: z.email(),
   createdAt: z.iso.datetime(),
-  fullName: z.string().min(MIN_FULL_NAME_LENGTH).max(MAX_FULL_NAME_LENGTH),
+  fullName: z
+    .string()
+    .trim()
+    .min(MIN_FULL_NAME_LENGTH)
+    .max(MAX_FULL_NAME_LENGTH),
 });
 
 export const signUpBodySchema = z.object({
   email: z.email(),
-  password: z.string().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH),
-  fullName: z.string().min(MIN_FULL_NAME_LENGTH).max(MAX_FULL_NAME_LENGTH),
+  password: z.string().trim().min(MIN_PASSWORD_LENGTH).max(MAX_PASSWORD_LENGTH),
+  fullName: z
+    .string()
+    .trim()
+    .min(MIN_FULL_NAME_LENGTH)
+    .max(MAX_FULL_NAME_LENGTH),
 });

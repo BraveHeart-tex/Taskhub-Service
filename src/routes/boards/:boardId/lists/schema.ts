@@ -7,12 +7,20 @@ import {
 export const listSchema = z.object({
   id: z.uuid(),
   boardId: z.uuid(),
-  title: z.string().min(MIN_LIST_TITLE_LENGTH).max(MAX_LIST_TITLE_LENGTH),
+  title: z
+    .string()
+    .trim()
+    .min(MIN_LIST_TITLE_LENGTH)
+    .max(MAX_LIST_TITLE_LENGTH),
   position: z.number().min(0),
   createdAt: z.iso.datetime(),
   updatedAt: z.iso.datetime(),
 });
 
 export const createListBodySchema = z.object({
-  title: z.string().min(MIN_LIST_TITLE_LENGTH).max(MAX_LIST_TITLE_LENGTH),
+  title: z
+    .string()
+    .trim()
+    .min(MIN_LIST_TITLE_LENGTH)
+    .max(MAX_LIST_TITLE_LENGTH),
 });

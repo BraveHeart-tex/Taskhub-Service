@@ -9,7 +9,11 @@ export const boardMemberDtoSchema = z.object({
   user: z.object({
     id: z.uuid(),
     email: z.email(),
-    fullName: z.string().min(MIN_FULL_NAME_LENGTH).max(MAX_FULL_NAME_LENGTH),
+    fullName: z
+      .string()
+      .trim()
+      .min(MIN_FULL_NAME_LENGTH)
+      .max(MAX_FULL_NAME_LENGTH),
   }),
   role: z.literal('owner').or(z.literal('member')),
   joinedAt: z.iso.datetime(),
