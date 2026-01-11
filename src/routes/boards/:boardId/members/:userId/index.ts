@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { deleteBoardMemberParamsSchema } from './schema';
 
@@ -18,8 +19,8 @@ const route: FastifyPluginAsyncZod = async (app) => {
         userId: request.params.userId,
       });
 
-      return reply.status(204).send();
-    }
+      return reply.status(HttpStatus.NO_CONTENT).send();
+    },
   );
 };
 

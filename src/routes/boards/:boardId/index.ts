@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { boardSchema, updateBoardBodySchema } from '../schema';
 import { boardRouteParamsSchema } from './schema';
@@ -18,7 +19,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       await app.boardService.delete(boardId, user.id);
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 
@@ -29,7 +30,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         params: boardRouteParamsSchema,
         body: updateBoardBodySchema,
         response: {
-          200: boardSchema,
+          [HttpStatus.OK]: boardSchema,
         },
       },
     },
@@ -44,7 +45,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         request.body
       );
 
-      return reply.status(200).send(result);
+      return reply.status(HttpStatus.OK).send(result);
     }
   );
 };

@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 
 const logoutRoute: FastifyPluginAsyncZod = async (app) => {
@@ -10,7 +11,7 @@ const logoutRoute: FastifyPluginAsyncZod = async (app) => {
 
       reply.clearCookie('session_token');
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     },
   });
 };

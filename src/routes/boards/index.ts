@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { boardSchema, createBoardBodySchema } from './schema';
 
@@ -8,7 +9,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
     {
       schema: {
         response: {
-          201: boardSchema.array(),
+          [HttpStatus.OK]: boardSchema.array(),
         },
       },
     },
@@ -17,7 +18,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       const result = await app.boardService.getUserBoards(user.id);
 
-      return reply.status(201).send(result);
+      return reply.status(HttpStatus.OK).send(result);
     }
   );
 
@@ -27,7 +28,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       schema: {
         body: createBoardBodySchema,
         response: {
-          201: boardSchema,
+          [HttpStatus.CREATED]: boardSchema,
         },
       },
     },
@@ -40,7 +41,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         title: request.body.title,
       });
 
-      return reply.status(201).send(result);
+      return reply.status(HttpStatus.CREATED).send(result);
     }
   );
 };

@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { listRouteParamsSchema, updateBoardListSchema } from './schema';
 
@@ -21,7 +22,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         title: request.body.title,
       });
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 
@@ -41,7 +42,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         boardId: request.params.boardId,
       });
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 };

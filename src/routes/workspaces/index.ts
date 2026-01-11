@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import {
   createWorkspaceSchema,
@@ -14,7 +15,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       schema: {
         body: createWorkspaceSchema,
         response: {
-          201: workspaceSchema,
+          [HttpStatus.CREATED]: workspaceSchema,
         },
       },
     },
@@ -28,7 +29,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         ownerId: user.id,
       });
 
-      return reply.status(201).send(workspace);
+      return reply.status(HttpStatus.CREATED).send(workspace);
     }
   );
 
@@ -39,7 +40,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         params: workspaceRouteParamsSchema,
         body: updateWorkspaceSchema,
         response: {
-          200: workspaceSchema,
+          [HttpStatus.OK]: workspaceSchema,
         },
       },
     },
@@ -55,7 +56,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         currentUserId: user.id,
       });
 
-      return reply.status(200).send(updatedWorkspace);
+      return reply.status(HttpStatus.OK).send(updatedWorkspace);
     }
   );
 
@@ -73,7 +74,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       await app.workspaceService.delete(user.id, workspaceId);
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 };

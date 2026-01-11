@@ -4,15 +4,16 @@ import {
   InvalidBoardTitleError,
 } from '@/domain/board/board.errors';
 import type { DomainError } from '@/domain/domain-error';
+import { HttpStatus } from '@/http/http-status';
 
 export const boardErrorMap = new Map<
   new () => DomainError,
   { status: number; message: string }
 >([
-  [InvalidBoardTitleError, { status: 400, message: 'Invalid board title' }],
-  [BoardNotFoundError, { status: 404, message: 'Board not found' }],
+  [InvalidBoardTitleError, { status: HttpStatus.BAD_REQUEST, message: 'Invalid board title' }],
+  [BoardNotFoundError, { status: HttpStatus.NOT_FOUND, message: 'Board not found' }],
   [
     BoardTitleAlreadyExistsError,
-    { status: 409, message: 'Board title already exists' },
+    { status: HttpStatus.CONFLICT, message: 'Board title already exists' },
   ],
 ]);

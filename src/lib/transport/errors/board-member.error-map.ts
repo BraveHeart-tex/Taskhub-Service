@@ -3,6 +3,7 @@ import {
   BoardMemberNotFoundError,
 } from '@/domain/board/board-member/board-member.errors';
 import type { DomainError } from '@/domain/domain-error';
+import { HttpStatus } from '@/http/http-status';
 
 export const boardMemberErrorMap = new Map<
   new () => DomainError,
@@ -10,10 +11,10 @@ export const boardMemberErrorMap = new Map<
 >([
   [
     BoardMemberNotFoundError,
-    { status: 404, message: 'Board member not found' },
+    { status: HttpStatus.NOT_FOUND, message: 'Board member not found' },
   ],
   [
     BoardMemberAlreadyExistsError,
-    { status: 409, message: 'Board member already exists' },
+    { status: HttpStatus.CONFLICT, message: 'Board member already exists' },
   ],
 ]);

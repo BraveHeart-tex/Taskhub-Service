@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { cardRouteParamsSchema } from './schema';
 
@@ -20,7 +21,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         cardId: request.params.cardId,
       });
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 };

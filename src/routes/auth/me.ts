@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { authenticatedUserSchema } from './schema';
 
@@ -8,14 +9,14 @@ const meRoute: FastifyPluginAsyncZod = async (app) => {
     {
       schema: {
         response: {
-          200: authenticatedUserSchema,
+          [HttpStatus.OK]: authenticatedUserSchema,
         },
       },
     },
     async (req, reply) => {
       const { user } = requireAuth(req);
 
-      return reply.status(200).send(user);
+      return reply.status(HttpStatus.OK).send(user);
     }
   );
 };

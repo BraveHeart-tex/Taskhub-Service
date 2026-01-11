@@ -1,5 +1,6 @@
 import fp from 'fastify-plugin';
 import { DomainError } from '@/domain/domain-error';
+import { HttpStatus } from '@/http/http-status';
 import { errorRegistry } from '@/lib/transport/errors/error-registry';
 
 export default fp(async (app) => {
@@ -28,7 +29,7 @@ export default fp(async (app) => {
 
     request.log.error(err);
 
-    return reply.status(500).send({
+    return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
       error: {
         code: 'INTERNAL_ERROR',
         message: 'Internal server error',

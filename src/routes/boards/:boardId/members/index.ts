@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
 import { boardRouteParamsSchema } from '../schema';
 import { boardMemberCreateDtoSchema, boardMemberListDtoSchema } from './schema';
@@ -10,7 +11,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       schema: {
         params: boardRouteParamsSchema,
         response: {
-          200: boardMemberListDtoSchema,
+          [HttpStatus.OK]: boardMemberListDtoSchema,
         },
       },
     },
@@ -22,7 +23,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         user.id
       );
 
-      return reply.status(200).send(result);
+      return reply.status(HttpStatus.OK).send(result);
     }
   );
 
@@ -42,7 +43,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
         userId: request.body.userId,
       });
 
-      return reply.status(204).send();
+      return reply.status(HttpStatus.NO_CONTENT).send();
     }
   );
 };

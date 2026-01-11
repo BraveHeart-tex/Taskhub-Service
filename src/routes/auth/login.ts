@@ -1,5 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { AlreadyLoggedInError } from '@/domain/auth/auth.errors';
+import { HttpStatus } from '@/http/http-status';
 import { apiErrorSchema } from '@/lib/shared/schemas/error';
 import { authenticatedUserSchema, loginBodySchema } from './schema';
 
@@ -10,9 +11,9 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
       schema: {
         body: loginBodySchema,
         response: {
-          201: authenticatedUserSchema,
-          400: apiErrorSchema,
-          409: apiErrorSchema,
+          [HttpStatus.CREATED]: authenticatedUserSchema,
+          [HttpStatus.BAD_REQUEST]: apiErrorSchema,
+          [HttpStatus.CONFLICT]: apiErrorSchema,
         },
       },
     },
@@ -37,7 +38,7 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
         }
       );
 
-      return response.status(201).send({
+      return response.status(HttpStatus.CREATED).send({
         id: result.user.id,
         email: result.user.email,
         fullName: result.user.fullName,

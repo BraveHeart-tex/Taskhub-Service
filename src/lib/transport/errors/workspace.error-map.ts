@@ -3,6 +3,7 @@ import {
   WorkspaceNameAlreadyExistsError,
   WorkspaceNotFoundError,
 } from '@/domain/workspace/workspace.errors';
+import { HttpStatus } from '@/http/http-status';
 
 export const workspaceErrorMap = new Map<
   new () => DomainError,
@@ -10,7 +11,7 @@ export const workspaceErrorMap = new Map<
 >([
   [
     WorkspaceNameAlreadyExistsError,
-    { status: 409, message: 'Workspace name already exists' },
+    { status: HttpStatus.CONFLICT, message: 'Workspace name already exists' },
   ],
-  [WorkspaceNotFoundError, { status: 404, message: 'Workspace not found' }],
+  [WorkspaceNotFoundError, { status: HttpStatus.NOT_FOUND, message: 'Workspace not found' }],
 ]);

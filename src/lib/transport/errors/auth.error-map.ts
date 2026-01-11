@@ -6,6 +6,7 @@ import {
   UnauthorizedError,
 } from '@/domain/auth/auth.errors';
 import type { DomainError } from '@/domain/domain-error';
+import { HttpStatus } from '@/http/http-status';
 
 export const authErrorMap = new Map<
   new () => DomainError,
@@ -13,13 +14,13 @@ export const authErrorMap = new Map<
 >([
   [
     InvalidCredentialsError,
-    { status: 400, message: 'Invalid email or password' },
+    { status: HttpStatus.BAD_REQUEST, message: 'Invalid email or password' },
   ],
   [
     EmailAlreadyExistsError,
-    { status: 409, message: 'An account with this email already exists' },
+    { status: HttpStatus.CONFLICT, message: 'An account with this email already exists' },
   ],
-  [AlreadyLoggedInError, { status: 409, message: 'User is already logged in' }],
-  [UnauthenticatedError, { status: 401, message: 'User is not authenticated' }],
-  [UnauthorizedError, { status: 403, message: 'User is not authorized' }],
+  [AlreadyLoggedInError, { status: HttpStatus.CONFLICT, message: 'User is already logged in' }],
+  [UnauthenticatedError, { status: HttpStatus.UNAUTHORIZED, message: 'User is not authenticated' }],
+  [UnauthorizedError, { status: HttpStatus.FORBIDDEN, message: 'User is not authorized' }],
 ]);
