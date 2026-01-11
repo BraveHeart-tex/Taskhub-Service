@@ -197,3 +197,4 @@ export type ListCreate = typeof lists.$inferInsert;
 export type ListUpdate = Pick<ListRow, 'title'>;
 
 export type CardCreate = typeof cards.$inferInsert;
+export type CardUpdate = Pick<CardRow, 'title' | 'description'>;

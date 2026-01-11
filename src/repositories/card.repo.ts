@@ -1,6 +1,6 @@
 import { asc, eq, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
-import { type CardCreate, cards } from '@/db/schema';
+import { type CardCreate, type CardUpdate, cards } from '@/db/schema';
 import { CARD_POSITION_GAP } from '@/domain/card/card.constants';
 
 export class CardRepository {
@@ -55,5 +55,15 @@ export class CardRepository {
   async delete(cardId: string) {
     const db = useDb();
     await db.delete(cards).where(eq(cards.id, cardId));
+  }
+  async update(cardId: string, values: CardUpdate) {
+    const db = useDb();
+    const [result] = await db
+      .update(cards)
+      .set(values)
+      .where(eq(cards.id, cardId))
+      .returning();
+
+    return result;
   }
 }

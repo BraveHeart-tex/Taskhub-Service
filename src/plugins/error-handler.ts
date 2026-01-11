@@ -1,14 +1,27 @@
 import fp from 'fastify-plugin';
 import { DomainError } from '@/domain/domain-error';
+import { isFastifyValidationError } from '@/http/fastify-validation-error';
 import { HttpStatus } from '@/http/http-status';
 import { errorRegistry } from '@/lib/transport/errors/error-registry';
 
 export default fp(async (app) => {
   app.setErrorHandler((err, request, reply) => {
+    request.log.error(err);
+
     const requestId = request.id;
 
-    if (app.config.NODE_ENV === 'development') {
-      request.log.error(err);
+    if (isFastifyValidationError(err)) {
+      return reply.status(400).send({
+        error: {
+          code: 'VALIDATION_ERROR',
+          message: 'Request validation failed',
+          requestId,
+          details: err.validation?.map((issue) => ({
+            path: `${err.validationContext}${issue.instancePath || ''}`,
+            message: issue.message,
+          })),
+        },
+      });
     }
 
     if (err instanceof DomainError) {
@@ -26,8 +39,6 @@ export default fp(async (app) => {
         });
       }
     }
-
-    request.log.error(err);
 
     return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
       error: {

@@ -5,6 +5,7 @@ import { CardNotFoundError } from '@/domain/card/card.errors';
 import type {
   CreateCardParams,
   DeleteCardParams,
+  UpdateCardParams,
 } from '@/domain/card/card.types';
 import { computeInsertAtTopPosition } from '@/domain/card/positioning';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
@@ -92,5 +93,37 @@ export class CardService {
       await this.cardRepository.delete(cardId);
     });
   }
-  async updateCard() {}
+  async updateCard({
+    currentUserId,
+    cardId,
+    listId,
+    boardId,
+    title,
+    description,
+  }: UpdateCardParams) {
+    return withTransaction(async () => {
+      const card = await this.cardRepository.findById(cardId);
+      if (!card || card.listId !== listId) {
+        throw new CardNotFoundError();
+      }
+
+      const list = await this.listRepository.findById(listId);
+      if (!list || list.boardId !== boardId) {
+        throw new ListNotFoundError();
+      }
+
+      const isMember = await this.boardMemberRepository.isMember(
+        boardId,
+        currentUserId
+      );
+      if (!isMember) {
+        throw new BoardMemberNotFoundError();
+      }
+
+      return await this.cardRepository.update(cardId, {
+        title: title ?? '',
+        description: description ?? null,
+      });
+    });
+  }
 }

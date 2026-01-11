@@ -12,3 +12,12 @@ export interface DeleteCardParams {
   listId: string;
   boardId: string;
 }
+
+export interface UpdateCardParams {
+  currentUserId: string;
+  cardId: string;
+  listId: string;
+  boardId: string;
+  title?: string;
+  description?: string;
+}
