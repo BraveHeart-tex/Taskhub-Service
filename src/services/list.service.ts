@@ -125,10 +125,10 @@ export class ListService {
         throw new ListNotFoundError();
       }
 
-      let { position, needsRebalance } = computeNewPosition(
-        before?.position,
-        after?.position
-      );
+      let { position, needsRebalance } = computeNewPosition({
+        before: before?.position,
+        after: after?.position,
+      });
 
       if (needsRebalance) {
         await this.listRepository.rebalancePositions(boardId);
@@ -141,10 +141,10 @@ export class ListService {
           ? await this.listRepository.findById(afterListId)
           : null;
 
-        ({ position } = computeNewPosition(
-          refreshedBefore?.position,
-          refreshedAfter?.position
-        ));
+        ({ position } = computeNewPosition({
+          before: refreshedBefore?.position,
+          after: refreshedAfter?.position,
+        }));
       }
 
       await this.listRepository.update(listId, {

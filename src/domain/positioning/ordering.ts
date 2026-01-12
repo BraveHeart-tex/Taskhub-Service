@@ -1,7 +1,5 @@
 import Decimal from 'decimal.js';
-
-export const POSITION_GAP = new Decimal(1000);
-const MIN_GAP = new Decimal('0.0000000001');
+import { MIN_POSITION_DELTA, POSITION_GAP } from './ordering.constants';
 
 export function computeInsertAtBottomPosition(max: string | null): {
   position: Decimal;
@@ -22,10 +20,13 @@ export function computeInsertAtBottomPosition(max: string | null): {
   };
 }
 
-export function computeNewPosition(
-  before?: string | null,
-  after?: string | null
-): { position: Decimal; needsRebalance: boolean } {
+export function computeNewPosition({
+  before,
+  after,
+}: {
+  before?: string | null;
+  after?: string | null;
+}): { position: Decimal; needsRebalance: boolean } {
   // Empty container
   if (!before && !after) {
     return {
@@ -55,7 +56,7 @@ export function computeNewPosition(
   const right = new Decimal(after!);
   const diff = right.minus(left);
 
-  if (diff.lte(MIN_GAP)) {
+  if (diff.lte(MIN_POSITION_DELTA)) {
     return {
       position: left,
       needsRebalance: true,
@@ -67,3 +68,26 @@ export function computeNewPosition(
     needsRebalance: false,
   };
 }
+
+export const computeInsertAtTopPosition = (
+  minPosition: string | number | null
+): {
+  position: Decimal;
+  needsRebalance: boolean;
+} => {
+  if (minPosition === null) {
+    return {
+      position: new Decimal(POSITION_GAP),
+      needsRebalance: false,
+    };
+  }
+
+  const min = new Decimal(minPosition);
+  const position = min.div(2);
+  const delta = min.minus(position);
+
+  return {
+    position,
+    needsRebalance: delta.lt(MIN_POSITION_DELTA),
+  };
+};

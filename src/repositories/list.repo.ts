@@ -2,7 +2,7 @@ import { asc, sql } from 'drizzle-orm';
 import { eq } from 'drizzle-orm/gel-core/expressions';
 import { useDb } from '@/db/context';
 import { type ListCreate, type ListUpdate, lists } from '@/db/schema';
-import { POSITION_GAP } from '@/domain/positioning/ordering';
+import { POSITION_GAP } from '@/domain/positioning/ordering.constants';
 
 export class ListRepository {
   async create(values: ListCreate) {

@@ -1,7 +1,7 @@
 import { asc, desc, eq, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import { type CardCreate, type CardUpdate, cards } from '@/db/schema';
-import { CARD_POSITION_GAP } from '@/domain/card/card.constants';
+import { POSITION_GAP } from '@/domain/positioning/ordering.constants';
 
 export class CardRepository {
   async create(input: CardCreate) {
@@ -68,7 +68,7 @@ export class CardRepository {
       rows.map(
         (row, index) =>
           sql`WHEN ${cards.id} = ${row.id} THEN ${sql.raw(
-            `${index + 1} * ${CARD_POSITION_GAP}`
+            `${index + 1} * ${POSITION_GAP}`
           )}::numeric`
       ),
       sql.raw(' ')

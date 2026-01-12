@@ -10,8 +10,8 @@ import type {
 } from '@/domain/card/card.types';
 import {
   computeInsertAtTopPosition,
-  computeInsertBetweenPositions,
-} from '@/domain/card/positioning';
+  computeNewPosition,
+} from '@/domain/positioning/ordering';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { CardRepository } from '@/repositories/card.repo';
 import type { ListRepository } from '@/repositories/list.repo';
@@ -182,7 +182,7 @@ export class CardService {
         throw new CardNotFoundError();
       }
 
-      let { position, needsRebalance } = computeInsertBetweenPositions({
+      let { position, needsRebalance } = computeNewPosition({
         before: beforePosition,
         after: afterPosition,
       });
@@ -204,7 +204,7 @@ export class CardService {
             )
           : null;
 
-        ({ position } = computeInsertBetweenPositions({
+        ({ position } = computeNewPosition({
           before: refreshedBefore,
           after: refreshedAfter,
         }));
