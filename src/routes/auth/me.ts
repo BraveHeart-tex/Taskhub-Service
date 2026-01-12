@@ -13,8 +13,8 @@ const meRoute: FastifyPluginAsyncZod = async (app) => {
         },
       },
     },
-    async (req, reply) => {
-      const { user } = requireAuth(req);
+    async (request, reply) => {
+      const { user } = requireAuth(request);
 
       return reply.status(HttpStatus.OK).send(user);
     }

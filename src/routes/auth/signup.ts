@@ -17,14 +17,14 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
         },
       },
     },
-    async (request, response) => {
+    async (request, reply) => {
       if (request.user?.id || request.session?.id) {
         throw new AlreadyLoggedInError();
       }
 
       const result = await app.authService.signup(request.body);
 
-      response.setCookie(
+      reply.setCookie(
         SESSION_COOKIE_NAME,
         `${result.sessionId}.${result.sessionSecret}`,
         {
@@ -35,7 +35,7 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
         }
       );
 
-      return response.status(HttpStatus.CREATED).send(result.user);
+      return reply.status(HttpStatus.CREATED).send(result.user);
     }
   );
 };

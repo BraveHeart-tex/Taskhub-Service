@@ -5,8 +5,8 @@ import { requireAuth } from '@/lib/require-auth';
 
 const logoutRoute: FastifyPluginAsyncZod = async (app) => {
   app.delete('/logout', {
-    handler: async (req, reply) => {
-      const { user, session } = requireAuth(req);
+    handler: async (request, reply) => {
+      const { user, session } = requireAuth(request);
 
       await app.authService.logout(session.id, user.id);
 
