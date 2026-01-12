@@ -19,10 +19,10 @@ export class ListRepository {
       FOR UPDATE
     `);
   }
-  async getMaxPosition(boardId: string) {
+  async getMaxPosition(boardId: string): Promise<string | null> {
     const db = useDb();
     const [row] = await db
-      .select({ max: sql<number>`max(${lists.position})` })
+      .select({ max: sql<string>`max(${lists.position})` })
       .from(lists)
       .where(eq(lists.boardId, boardId));
 
