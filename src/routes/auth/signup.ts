@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import { SESSION_COOKIE_NAME } from '@/domain/auth/auth.constants';
 import { AlreadyLoggedInError } from '@/domain/auth/auth.errors';
 import { HttpStatus } from '@/http/http-status';
 import { apiErrorSchema } from '@/lib/shared/schemas/error';
@@ -24,7 +25,7 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
       const result = await app.authService.signup(request.body);
 
       response.setCookie(
-        'session_token',
+        SESSION_COOKIE_NAME,
         `${result.sessionId}.${result.sessionSecret}`,
         {
           httpOnly: true,

@@ -3,3 +3,5 @@ export const MAX_PASSWORD_LENGTH = 100;
 
 export const MIN_FULL_NAME_LENGTH = 2;
 export const MAX_FULL_NAME_LENGTH = 100;
+
+export const SESSION_COOKIE_NAME = 'session_token';
