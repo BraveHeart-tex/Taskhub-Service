@@ -7,6 +7,7 @@ import {
   InvalidReorderPayloadError,
   ListNotFoundError,
 } from '@/domain/board/list/list.errors';
+import { computeInsertAtBottomPosition } from '@/domain/positioning/ordering';
 import type { BoardRepository } from '@/repositories/board.repo';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { ListRepository } from '@/repositories/list.repo';
@@ -42,13 +43,12 @@ export class ListService {
       }
 
       const max = await this.listRepository.getMaxPosition(boardId);
-      const position =
-        max === null ? LIST_POSITION_GAP : max + LIST_POSITION_GAP;
+      const { position } = computeInsertAtBottomPosition(max);
 
       return this.listRepository.create({
         boardId,
         title,
-        position,
+        position: position.toString(),
       });
     });
   }
