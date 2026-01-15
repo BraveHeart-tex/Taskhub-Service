@@ -1,6 +1,7 @@
 import path from 'node:path';
 import autoload from '@fastify/autoload';
 import cookie from '@fastify/cookie';
+import cors from '@fastify/cors';
 import sensible from '@fastify/sensible';
 import Fastify from 'fastify';
 import type { ZodTypeProvider } from 'fastify-type-provider-zod';
@@ -23,6 +24,11 @@ export function buildApp() {
   app.setValidatorCompiler(validatorCompiler);
   app.setSerializerCompiler(serializerCompiler);
 
+  app.register(cors, {
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+    origin: ['http://localhost:5173'],
+  });
   app.register(sensible);
   app.register(envPlugin);
   app.register(dbPlugin);
