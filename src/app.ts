@@ -27,6 +27,7 @@ export function buildApp() {
   app.register(cors, {
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+    methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     origin: ['http://localhost:5173'],
   });
   app.register(sensible);

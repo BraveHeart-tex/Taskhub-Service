@@ -40,12 +40,19 @@ export default fp(async (app) => {
       }
     }
 
-    return reply.status(HttpStatus.INTERNAL_SERVER_ERROR).send({
-      error: {
-        code: 'INTERNAL_ERROR',
-        message: 'Internal server error',
-        requestId,
-      },
-    });
+    return (
+      reply
+        // biome-ignore lint/suspicious/noExplicitAny: any is fine here
+        .status((err as any)?.statusCode ?? HttpStatus.INTERNAL_SERVER_ERROR)
+        .send({
+          error: {
+            // biome-ignore lint/suspicious/noExplicitAny: any is fine here
+            code: (err as any)?.code || 'INTERNAL_ERROR',
+            // biome-ignore lint/suspicious/noExplicitAny: any is fine here
+            message: (err as any).message || 'Internal server error',
+            requestId,
+          },
+        })
+    );
   });
 });
