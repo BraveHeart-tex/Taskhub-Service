@@ -15,3 +15,4 @@ export class WorkspaceMemberAlreadyExistsError extends DomainError {
     this.name = 'WorkspaceMemberAlreadyExistsError';
   }
 }
+

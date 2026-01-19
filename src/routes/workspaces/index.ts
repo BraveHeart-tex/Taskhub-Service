@@ -4,6 +4,24 @@ import { requireAuth } from '@/lib/require-auth';
 import { createWorkspaceSchema, workspaceSchema } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
+  app.get(
+    '/',
+    {
+      schema: {
+        response: {
+          [HttpStatus.OK]: workspaceSchema.array(),
+        },
+      },
+    },
+    async (request, reply) => {
+      const { user } = requireAuth(request);
+
+      const result = await app.workspaceService.getWorkspacesForUser(user.id);
+
+      return reply.status(HttpStatus.OK).send(result);
+    }
+  );
+
   app.post(
     '/',
     {

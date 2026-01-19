@@ -1,9 +1,10 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, getTableColumns } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import {
   type WorkspaceInsert,
   type WorkspaceRow,
   type WorkspaceUpdate,
+  workspaceMembers,
   workspaces,
 } from '@/db/schema';
 
@@ -46,5 +47,34 @@ export class WorkspaceRepository {
       .from(workspaces)
       .where(and(eq(workspaces.ownerId, ownerId), eq(workspaces.name, name)));
     return result;
+  }
+
+  async findByUserId(userId: string) {
+    const db = useDb();
+    const ownedWorkspaces = await db
+      .select(getTableColumns(workspaces))
+      .from(workspaces)
+      .where(eq(workspaces.ownerId, userId));
+
+    const memberWorkspaces = await db
+      .select(getTableColumns(workspaces))
+      .from(workspaces)
+      .innerJoin(
+        workspaceMembers,
+        and(
+          eq(workspaceMembers.workspaceId, workspaces.id),
+          eq(workspaceMembers.userId, userId)
+        )
+      );
+
+    const workspaceMap = new Map<string, WorkspaceRow>();
+    for (const workspace of ownedWorkspaces) {
+      workspaceMap.set(workspace.id, workspace);
+    }
+    for (const workspace of memberWorkspaces) {
+      workspaceMap.set(workspace.id, workspace);
+    }
+
+    return Array.from(workspaceMap.values());
   }
 }

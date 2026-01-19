@@ -76,5 +76,7 @@ export class WorkspaceService {
     await this.workspaceRepo.delete(workspaceId);
   }
 
-  async getWorkspacesForUser(currentUserId: string) {}
+  async getWorkspacesForUser(currentUserId: string) {
+    return await this.workspaceRepo.findByUserId(currentUserId);
+  }
 }

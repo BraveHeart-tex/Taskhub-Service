@@ -84,3 +84,4 @@ export class WorkspaceMemberRepository {
     await db.delete(workspaceMembers).where(eq(workspaceMembers.id, id));
   }
 }
+
