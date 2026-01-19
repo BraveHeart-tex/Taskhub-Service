@@ -13,7 +13,7 @@ import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 export class WorkspaceService {
   constructor(private readonly workspaceRepo: WorkspaceRepository) {}
 
-  async create(values: WorkspaceInsert) {
+  async createWorkspace(values: WorkspaceInsert) {
     const existing = await this.workspaceRepo.findByOwnerAndName(
       values.ownerId,
       values.name
@@ -26,7 +26,7 @@ export class WorkspaceService {
     return await this.workspaceRepo.create(values);
   }
 
-  async update({
+  async updateWorkspace({
     workspaceId,
     changes,
     currentUserId,
@@ -59,7 +59,7 @@ export class WorkspaceService {
     return await this.workspaceRepo.update(workspaceId, changes);
   }
 
-  async delete(
+  async deleteWorkspace(
     currentUserId: WorkspaceRow['ownerId'],
     workspaceId: WorkspaceRow['id']
   ) {

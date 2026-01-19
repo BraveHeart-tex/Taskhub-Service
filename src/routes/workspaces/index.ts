@@ -24,7 +24,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       const { name } = request.body;
 
-      const workspace = await app.workspaceService.create({
+      const workspace = await app.workspaceService.createWorkspace({
         name,
         ownerId: user.id,
       });
@@ -50,7 +50,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       const { id } = request.params;
       const { name } = request.body;
 
-      const updatedWorkspace = await app.workspaceService.update({
+      const updatedWorkspace = await app.workspaceService.updateWorkspace({
         workspaceId: id,
         changes: { name },
         currentUserId: user.id,
@@ -72,7 +72,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       const workspaceId = request.params.id;
 
-      await app.workspaceService.delete(user.id, workspaceId);
+      await app.workspaceService.deleteWorkspace(user.id, workspaceId);
 
       return reply.status(HttpStatus.NO_CONTENT).send();
     }
