@@ -40,15 +40,6 @@ export class WorkspaceRepository {
     return result;
   }
 
-  async findByOwnerAndName(ownerId: WorkspaceRow['ownerId'], name: string) {
-    const db = useDb();
-    const [result] = await db
-      .select()
-      .from(workspaces)
-      .where(and(eq(workspaces.ownerId, ownerId), eq(workspaces.name, name)));
-    return result;
-  }
-
   async findByUserId(userId: string) {
     const db = useDb();
     const ownedWorkspaces = await db

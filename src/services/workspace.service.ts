@@ -5,10 +5,7 @@ import type {
 } from '@/db/schema';
 import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
-import {
-  WorkspaceNameAlreadyExistsError,
-  WorkspaceNotFoundError,
-} from '@/domain/workspace/workspace.errors';
+import { WorkspaceNotFoundError } from '@/domain/workspace/workspace.errors';
 import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 import type { WorkspaceMemberRepository } from '@/repositories/workspace-member.repo';
 
@@ -20,15 +17,6 @@ export class WorkspaceService {
 
   async createWorkspace(values: WorkspaceInsert) {
     return withTransaction(async () => {
-      const existing = await this.workspaceRepo.findByOwnerAndName(
-        values.ownerId,
-        values.name
-      );
-
-      if (existing) {
-        throw new WorkspaceNameAlreadyExistsError();
-      }
-
       const workspace = await this.workspaceRepo.create(values);
 
       await this.workspaceMemberRepo.create({
@@ -58,17 +46,6 @@ export class WorkspaceService {
 
     if (workspace.ownerId !== currentUserId) {
       throw new UnauthorizedError();
-    }
-
-    if (changes.name && changes.name !== workspace.name) {
-      const existing = await this.workspaceRepo.findByOwnerAndName(
-        workspace.ownerId,
-        changes.name
-      );
-
-      if (existing) {
-        throw new WorkspaceNameAlreadyExistsError();
-      }
     }
 
     return await this.workspaceRepo.update(workspaceId, changes);
