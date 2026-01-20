@@ -32,3 +32,16 @@ export const updateWorkspaceSchema = z.object({
 export const workspaceRouteParamsSchema = z.object({
   workspaceId: z.uuid(),
 });
+
+export const workspacePreviewSchema = workspaceSchema.extend({
+  isCurrentUserOwner: z.boolean(),
+  memberCount: z.number(),
+  membersPreview: z.array(
+    z.object({
+      id: z.uuid(),
+      name: z.string().min(2).max(100),
+    })
+  ),
+});
+
+export const workspacePreviewResponseSchema = workspacePreviewSchema.array();

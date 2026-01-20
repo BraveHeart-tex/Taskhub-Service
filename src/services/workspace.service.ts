@@ -6,6 +6,7 @@ import type {
 import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import { WorkspaceNotFoundError } from '@/domain/workspace/workspace.errors';
+import type { WorkspacePreviewDto } from '@/domain/workspace/workspace.types';
 import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 import type { WorkspaceMemberRepository } from '@/repositories/workspace-member.repo';
 
@@ -68,7 +69,9 @@ export class WorkspaceService {
     await this.workspaceRepo.delete(workspaceId);
   }
 
-  async getWorkspacesForUser(currentUserId: string) {
+  async getWorkspacesForUser(
+    currentUserId: string
+  ): Promise<WorkspacePreviewDto[]> {
     const workspaces = await this.workspaceRepo.findByUserId(currentUserId);
     return workspaces.map((workspace) => ({
       ...workspace,

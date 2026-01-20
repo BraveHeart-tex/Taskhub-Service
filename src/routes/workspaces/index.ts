@@ -1,8 +1,11 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
-import { z } from 'zod';
 import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
-import { createWorkspaceSchema, workspaceSchema } from './schema';
+import {
+  createWorkspaceSchema,
+  workspacePreviewResponseSchema,
+  workspaceSchema,
+} from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.get(
@@ -10,9 +13,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
     {
       schema: {
         response: {
-          [HttpStatus.OK]: workspaceSchema
-            .extend({ isCurrentUserOwner: z.boolean() })
-            .array(),
+          [HttpStatus.OK]: workspacePreviewResponseSchema,
         },
       },
     },
@@ -20,6 +21,10 @@ const route: FastifyPluginAsyncZod = async (app) => {
       const { user } = requireAuth(request);
 
       const result = await app.workspaceService.getWorkspacesForUser(user.id);
+
+      app.log.info({
+        data: result,
+      });
 
       return reply.status(HttpStatus.OK).send(result);
     }
