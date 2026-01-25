@@ -7,6 +7,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Workspaces'],
+        summary: 'Get workspace summary',
+        description:
+          'Returns a lightweight summary of a workspace the authenticated user has access to.\n\n' +
+          'This endpoint is intended for quick lookups and UI contexts where full workspace details are not required.',
         params: workspaceRouteParamsSchema,
       },
     },
