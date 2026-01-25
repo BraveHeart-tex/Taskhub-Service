@@ -8,6 +8,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Boards'],
+        summary: 'Remove board member',
+        description:
+          'Revokes a user’s access to a board.\n\n' +
+          'Only the board owner may remove members from a board.',
         params: deleteBoardMemberParamsSchema,
       },
     },
@@ -20,7 +25,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       });
 
       return reply.status(HttpStatus.NO_CONTENT).send();
-    },
+    }
   );
 };
 
