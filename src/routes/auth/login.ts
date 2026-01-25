@@ -11,6 +11,13 @@ const loginRoute: FastifyPluginAsyncZod = async (app) => {
     '/login',
     {
       schema: {
+        tags: ['Auth'],
+        summary: 'Log in',
+        description:
+          'Authenticates a user using email and password and creates a new session.\n\n' +
+          'On successful authentication, a session cookie is set on the response.\n\n' +
+          'If the user is already authenticated, the request is rejected.\n\n' +
+          'The returned payload contains basic user information for immediate client hydration.',
         body: loginBodySchema,
         response: {
           [HttpStatus.CREATED]: authenticatedUserSchema,
