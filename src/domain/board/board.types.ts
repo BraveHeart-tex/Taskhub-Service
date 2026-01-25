@@ -22,3 +22,13 @@ export interface GetBoardResponse {
     cards: CardDto[];
   }[];
 }
+
+export interface WorkspaceBoardPreviewDto {
+  id: string;
+  title: string;
+  workspaceId: string;
+  isCurrentUserOwner: boolean;
+  memberCount: number;
+  createdAt: string;
+  updatedAt: string;
+}

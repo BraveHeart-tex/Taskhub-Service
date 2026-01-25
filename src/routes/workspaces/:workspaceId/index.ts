@@ -4,9 +4,9 @@ import { requireAuth } from '@/lib/require-auth';
 import {
   updateWorkspaceSchema,
   workspaceContextResponseSchema,
-  workspaceRouteParamsSchema,
   workspaceSchema,
 } from '../schema';
+import { workspaceRouteParamsSchema } from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.get(

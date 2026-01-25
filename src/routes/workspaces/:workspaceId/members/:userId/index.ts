@@ -2,7 +2,7 @@ import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { z } from 'zod';
 import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
-import { workspaceRouteParamsSchema } from '@/routes/workspaces/schema';
+import { workspaceRouteParamsSchema } from '../../schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.delete(

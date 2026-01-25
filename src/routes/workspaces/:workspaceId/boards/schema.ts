@@ -33,3 +33,17 @@ export const updateBoardBodySchema = z.object({
     .min(MIN_BOARD_TITLE_LENGTH)
     .max(MAX_BOARD_TITLE_LENGTH),
 });
+
+export const workspaceBoardPreviewSchema = z.object({
+  id: z.uuid(),
+  title: z.string().min(MIN_BOARD_TITLE_LENGTH).max(MAX_BOARD_TITLE_LENGTH),
+  workspaceId: z.uuid(),
+  isCurrentUserOwner: z.boolean(),
+  memberCount: z.number().min(0),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+});
+
+export const workspaceBoardPreviewResponseSchema = z.array(
+  workspaceBoardPreviewSchema
+);

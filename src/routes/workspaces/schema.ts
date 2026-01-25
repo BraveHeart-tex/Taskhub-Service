@@ -29,10 +29,6 @@ export const updateWorkspaceSchema = z.object({
     .max(WORKSPACE_NAME_MAX_LENGTH),
 });
 
-export const workspaceRouteParamsSchema = z.object({
-  workspaceId: z.uuid(),
-});
-
 export const workspacePreviewSchema = workspaceSchema.extend({
   isCurrentUserOwner: z.boolean(),
   memberCount: z.number(),

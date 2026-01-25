@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, inArray } from 'drizzle-orm';
+import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import { boardMembers, boards, cards, lists, users } from '@/db/schema';
 import { BoardMemberNotFoundError } from '@/domain/board/board-member/board-member.errors';
@@ -132,5 +132,27 @@ export class BoardReadRepository {
       .where(eq(boards.workspaceId, workspaceId))
       .orderBy(desc(boards.updatedAt))
       .limit(limit);
+  }
+  async listBoardsForWorkspace(workspaceId: string) {
+    const db = useDb();
+
+    const rows = await db
+      .select({
+        id: boards.id,
+        title: boards.title,
+        workspaceId: boards.workspaceId,
+        ownerId: boards.createdBy,
+        createdAt: boards.createdAt,
+        updatedAt: boards.updatedAt,
+        memberCount: sql`COUNT(${boardMembers.id})`
+          .mapWith(Number)
+          .as('member_count'),
+      })
+      .from(boards)
+      .leftJoin(boardMembers, eq(boardMembers.boardId, boards.id))
+      .where(eq(boards.workspaceId, workspaceId))
+      .groupBy(boards.id);
+
+    return rows;
   }
 }

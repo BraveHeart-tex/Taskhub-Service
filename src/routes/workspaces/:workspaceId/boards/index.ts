@@ -1,7 +1,12 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { HttpStatus } from '@/http/http-status';
 import { requireAuth } from '@/lib/require-auth';
-import { boardSchema, createBoardBodySchema } from './schema';
+import { workspaceRouteParamsSchema } from '../schema';
+import {
+  boardSchema,
+  createBoardBodySchema,
+  workspaceBoardPreviewResponseSchema,
+} from './schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.get(
@@ -13,15 +18,19 @@ const route: FastifyPluginAsyncZod = async (app) => {
         description:
           'Returns all boards the authenticated user has access to within the specified workspace.\n\n' +
           'The response contains lightweight board data suitable for navigation and overview views.',
+        params: workspaceRouteParamsSchema,
         response: {
-          [HttpStatus.OK]: boardSchema.array(),
+          [HttpStatus.OK]: workspaceBoardPreviewResponseSchema,
         },
       },
     },
     async (request, reply) => {
       const { user } = requireAuth(request);
 
-      const result = await app.boardService.getUserBoards(user.id);
+      const result = await app.boardService.listBoardsForWorkspace(
+        user.id,
+        request.params.workspaceId
+      );
 
       return reply.status(HttpStatus.OK).send(result);
     }

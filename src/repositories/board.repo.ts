@@ -59,4 +59,18 @@ export class BoardRepository {
         )
       );
   }
+  async findByUserIdAndWorkspaceId(userId: string, workspaceId: string) {
+    const db = useDb();
+    return db
+      .select(getTableColumns(boards))
+      .from(boards)
+      .innerJoin(
+        boardMembers,
+        and(
+          eq(boardMembers.boardId, boards.id),
+          eq(boardMembers.userId, userId)
+        )
+      )
+      .where(eq(boards.workspaceId, workspaceId));
+  }
 }

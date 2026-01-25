@@ -1,6 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { requireAuth } from '@/lib/require-auth';
-import { workspaceRouteParamsSchema } from '../../schema';
+import { workspaceRouteParamsSchema } from '../schema';
 
 const route: FastifyPluginAsyncZod = async (app) => {
   app.get(
