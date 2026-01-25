@@ -8,6 +8,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Lists'],
+        summary: 'Update list',
+        description:
+          'Updates mutable fields of an existing list within a board.\n\n' +
+          'Only users with access to the board may perform this operation.',
         params: listRouteParamsSchema,
         body: updateBoardListSchema,
       },
@@ -30,6 +35,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Lists'],
+        summary: 'Delete list',
+        description:
+          'Deletes a list from a board.\n\n' +
+          'The list is permanently removed along with any associated content.',
         params: listRouteParamsSchema,
       },
     },
