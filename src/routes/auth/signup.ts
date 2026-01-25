@@ -11,6 +11,12 @@ const signUpRoute: FastifyPluginAsyncZod = async (app) => {
     '/signup',
     {
       schema: {
+        tags: ['Auth'],
+        summary: 'Sign up',
+        description:
+          'Creates a new user account and authenticates the user in a single operation.\n\n' +
+          'On successful signup, a new session is created and a session cookie is set on the response.\n\n' +
+          'If a user is already authenticated, the request is rejected.',
         body: signUpBodySchema,
         response: {
           [HttpStatus.CREATED]: authenticatedUserSchema,
