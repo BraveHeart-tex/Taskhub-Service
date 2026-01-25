@@ -9,6 +9,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Cards'],
+        summary: 'Delete card',
+        description:
+          'Deletes a card from a list.\n\n' +
+          'The card is permanently removed from the board.',
         params: cardRouteParamsSchema,
       },
     },
@@ -29,6 +34,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Cards'],
+        summary: 'Update card',
+        description:
+          'Updates mutable fields of an existing card.\n\n' +
+          'Only users with access to the board may perform this operation.',
         params: cardRouteParamsSchema,
         body: cardUpdateBodySchema,
         response: {
