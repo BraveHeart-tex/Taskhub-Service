@@ -8,6 +8,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Lists'],
+        summary: 'Move list',
+        description:
+          'Moves a list to a new position within the same board.\n\n' +
+          'The list is repositioned relative to other lists using reference identifiers, allowing flexible reordering without requiring the full list order.',
         params: listRouteParamsSchema,
         body: moveListSchema,
       },
