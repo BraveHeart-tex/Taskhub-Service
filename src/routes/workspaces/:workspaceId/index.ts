@@ -13,6 +13,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Workspaces'],
+        summary: 'Get workspace',
+        description:
+          'Returns detailed context for a single workspace the authenticated user has access to.\n\n' +
+          'The response includes workspace metadata and related contextual information required to render the workspace view.',
         params: workspaceRouteParamsSchema,
         response: {
           [HttpStatus.OK]: workspaceContextResponseSchema,
@@ -35,6 +40,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Workspaces'],
+        summary: 'Update workspace',
+        description:
+          'Updates mutable fields of an existing workspace.\n\n' +
+          'Only users with sufficient permissions may perform this operation.',
         params: workspaceRouteParamsSchema,
         body: updateWorkspaceSchema,
         response: {
@@ -62,6 +72,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/',
     {
       schema: {
+        tags: ['Workspaces'],
+        summary: 'Delete workspace',
+        description:
+          'Permanently deletes a workspace the authenticated user owns.\n\n' +
+          'All associated data is removed as part of this operation and cannot be recovered.',
         params: workspaceRouteParamsSchema,
       },
     },
