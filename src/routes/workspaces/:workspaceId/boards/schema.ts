@@ -5,7 +5,6 @@ import {
 } from '@/domain/board/board.consants';
 
 export const createBoardBodySchema = z.object({
-  workspaceId: z.uuid(),
   title: z
     .string()
     .trim()

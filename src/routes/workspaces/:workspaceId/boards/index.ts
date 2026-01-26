@@ -46,6 +46,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
           'Creates a new board within the specified workspace.\n\n' +
           'The authenticated user is assigned as the board owner.',
         body: createBoardBodySchema,
+        params: workspaceRouteParamsSchema,
         response: {
           [HttpStatus.CREATED]: boardSchema,
         },
@@ -56,7 +57,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       const result = await app.boardService.createBoard({
         createdBy: user.id,
-        workspaceId: request.body.workspaceId,
+        workspaceId: request.params.workspaceId,
         title: request.body.title,
       });
 
