@@ -23,3 +23,11 @@ export class BoardTitleAlreadyExistsError extends DomainError {
     this.name = 'BoardTitleAlreadyExistsError';
   }
 }
+
+export class BoardAccessDeniedError extends DomainError {
+  readonly code = 'BOARD_ACCESS_DENIED_ERROR';
+  constructor() {
+    super(`Board access required`);
+    this.name = 'BoardAccessDeniedError';
+  }
+}

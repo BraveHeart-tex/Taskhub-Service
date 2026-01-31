@@ -8,6 +8,7 @@ import type { ListService } from '@/services/list.service';
 import type { WorkspaceService } from '@/services/workspace.service';
 import type { WorkspaceMemberService } from '@/services/workspace-member.service';
 import 'fastify';
+import type { BoardFavoriteService } from '@/services/board-favorite.service';
 import type { CardService } from '@/services/card.service';
 
 declare module 'fastify' {
@@ -16,6 +17,7 @@ declare module 'fastify' {
     authService: AuthService;
     boardService: BoardService;
     boardMemberService: BoardMemberService;
+    boardFavoriteService: BoardFavoriteService;
     cardService: CardService;
     workspaceService: WorkspaceService;
     workspaceMemberService: WorkspaceMemberService;
