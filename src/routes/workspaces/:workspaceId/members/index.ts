@@ -30,11 +30,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
 
       const result = await app.workspaceMemberService.getWorkspaceMembers(
         request.params.workspaceId,
-        user.id
+        user.id,
       );
 
       return reply.status(HttpStatus.OK).send(result);
-    }
+    },
   );
 
   app.post(
@@ -60,7 +60,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       });
 
       return reply.status(HttpStatus.NO_CONTENT).send();
-    }
+    },
   );
 
   app.patch(
@@ -88,7 +88,7 @@ const route: FastifyPluginAsyncZod = async (app) => {
       });
 
       return reply.status(HttpStatus.NO_CONTENT).send();
-    }
+    },
   );
 };
 

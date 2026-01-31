@@ -21,7 +21,7 @@ export class WorkspaceService {
     private readonly workspaceRepo: WorkspaceRepository,
     private readonly workspaceMemberRepo: WorkspaceMemberRepository,
     private readonly workspaceMemberReadRepo: WorkspaceMemberReadRepository,
-    private readonly boardReadRepo: BoardReadRepository
+    private readonly boardReadRepo: BoardReadRepository,
   ) {}
 
   async createWorkspace(values: WorkspaceInsert) {
@@ -62,7 +62,7 @@ export class WorkspaceService {
 
   async deleteWorkspace(
     currentUserId: WorkspaceRow['ownerId'],
-    workspaceId: WorkspaceRow['id']
+    workspaceId: WorkspaceRow['id'],
   ) {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 
@@ -78,7 +78,7 @@ export class WorkspaceService {
   }
 
   async getWorkspacesForUser(
-    currentUserId: string
+    currentUserId: string,
   ): Promise<WorkspacePreviewDto[]> {
     const workspaces = await this.workspaceRepo.findByUserId(currentUserId);
     return workspaces.map((workspace) => ({
@@ -89,7 +89,7 @@ export class WorkspaceService {
 
   async getWorkspaceForUser(
     currentUserId: string,
-    workspaceId: string
+    workspaceId: string,
   ): Promise<WorkspaceContextDto> {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 
@@ -121,14 +121,7 @@ export class WorkspaceService {
       throw new WorkspaceNotFoundError();
     }
 
-    const isMember = await this.workspaceMemberRepo.isMember(
-      workspaceId,
-      currentUserId
-    );
-
-    if (!isMember) {
-      throw new WorkspaceMemberNotFoundError();
-    }
+    await this.assertMember(currentUserId, workspaceId);
 
     const [memberCount, membersPreview, recentBoards] = await Promise.all([
       this.workspaceMemberReadRepo.countMembers(workspaceId),
@@ -147,5 +140,38 @@ export class WorkspaceService {
       membersPreview,
       recentBoards,
     };
+  }
+  async assertOwner(userId: string | undefined, workspaceId: string) {
+    if (!userId) {
+      throw new UnauthorizedError();
+    }
+
+    const workspace = await this.workspaceRepo.findById(workspaceId);
+
+    if (!workspace) {
+      throw new WorkspaceNotFoundError();
+    }
+
+    if (workspace.ownerId !== userId) {
+      throw new UnauthorizedError();
+    }
+
+    return workspace;
+  }
+  async assertMember(userId: string, workspaceId: string): Promise<void> {
+    const workspace = await this.workspaceRepo.findById(workspaceId);
+
+    if (!workspace) {
+      throw new WorkspaceNotFoundError();
+    }
+
+    const isMember = await this.workspaceMemberRepo.isMember(
+      workspaceId,
+      userId,
+    );
+
+    if (!isMember) {
+      throw new WorkspaceMemberNotFoundError();
+    }
   }
 }

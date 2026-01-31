@@ -9,6 +9,7 @@ import type { WorkspaceService } from '@/services/workspace.service';
 import type { WorkspaceMemberService } from '@/services/workspace-member.service';
 import 'fastify';
 import type { CardService } from '@/services/card.service';
+import type { WorkspaceFavoriteService } from '@/services/workspace-favorite.service';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -18,6 +19,7 @@ declare module 'fastify' {
     boardMemberService: BoardMemberService;
     cardService: CardService;
     workspaceService: WorkspaceService;
+    workspaceFavoriteService: WorkspaceFavoriteService;
     workspaceMemberService: WorkspaceMemberService;
     listService: ListService;
     config: {
