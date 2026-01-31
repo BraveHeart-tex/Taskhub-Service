@@ -11,8 +11,8 @@ export class WorkspaceFavoriteRepository {
       .where(
         and(
           eq(workspaceFavorites.userId, userId),
-          eq(workspaceFavorites.workspaceId, workspaceId),
-        ),
+          eq(workspaceFavorites.workspaceId, workspaceId)
+        )
       )
       .limit(1);
 
@@ -34,8 +34,17 @@ export class WorkspaceFavoriteRepository {
       .where(
         and(
           eq(workspaceFavorites.userId, userId),
-          eq(workspaceFavorites.workspaceId, workspaceId),
-        ),
+          eq(workspaceFavorites.workspaceId, workspaceId)
+        )
       );
+  }
+  async findByUserId(userId: string): Promise<string[]> {
+    const db = useDb();
+    const rows = await db
+      .select({ workspaceId: workspaceFavorites.workspaceId })
+      .from(workspaceFavorites)
+      .where(and(eq(workspaceFavorites.userId, userId)));
+
+    return rows.map((row) => row.workspaceId);
   }
 }

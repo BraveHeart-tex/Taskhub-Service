@@ -31,3 +31,5 @@ export const signUpBodySchema = z.object({
     .min(MIN_FULL_NAME_LENGTH)
     .max(MAX_FULL_NAME_LENGTH),
 });
+
+export const favoriteWorkspacesResponseSchema = z.array(z.uuid());

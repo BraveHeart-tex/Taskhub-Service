@@ -4,10 +4,13 @@ import type { WorkspaceService } from './workspace.service';
 export class WorkspaceFavoriteService {
   constructor(
     private readonly repo: WorkspaceFavoriteRepository,
-    private readonly workspaceService: WorkspaceService,
+    private readonly workspaceService: WorkspaceService
   ) {}
 
-  async favorite(userId: string, workspaceId: string) {
+  async favorite(
+    userId: string,
+    workspaceId: string
+  ): Promise<{ favorited: true }> {
     await this.workspaceService.assertMember(userId, workspaceId);
 
     await this.repo.insert(userId, workspaceId);
@@ -15,11 +18,18 @@ export class WorkspaceFavoriteService {
     return { favorited: true };
   }
 
-  async unfavorite(userId: string, workspaceId: string) {
+  async unfavorite(
+    userId: string,
+    workspaceId: string
+  ): Promise<{ favorited: false }> {
     await this.workspaceService.assertMember(userId, workspaceId);
 
     await this.repo.delete(userId, workspaceId);
 
     return { favorited: false };
+  }
+
+  async getFavoriteWorkspaces(userId: string): Promise<string[]> {
+    return this.repo.findByUserId(userId);
   }
 }

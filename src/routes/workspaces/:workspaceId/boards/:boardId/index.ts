@@ -32,6 +32,11 @@ const route: FastifyPluginAsyncZod = async (app) => {
     '/content',
     {
       schema: {
+        tags: ['Boards'],
+        summary: 'Get board content',
+        description:
+          'Returns the content of a single board the authenticated user has access to.\n\n' +
+          'The response contains the board content required to render the board view.',
         params: boardRouteParamsSchema,
       },
     },

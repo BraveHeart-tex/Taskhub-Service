@@ -21,7 +21,7 @@ export class WorkspaceService {
     private readonly workspaceRepo: WorkspaceRepository,
     private readonly workspaceMemberRepo: WorkspaceMemberRepository,
     private readonly workspaceMemberReadRepo: WorkspaceMemberReadRepository,
-    private readonly boardReadRepo: BoardReadRepository,
+    private readonly boardReadRepo: BoardReadRepository
   ) {}
 
   async createWorkspace(values: WorkspaceInsert) {
@@ -62,7 +62,7 @@ export class WorkspaceService {
 
   async deleteWorkspace(
     currentUserId: WorkspaceRow['ownerId'],
-    workspaceId: WorkspaceRow['id'],
+    workspaceId: WorkspaceRow['id']
   ) {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 
@@ -78,7 +78,7 @@ export class WorkspaceService {
   }
 
   async getWorkspacesForUser(
-    currentUserId: string,
+    currentUserId: string
   ): Promise<WorkspacePreviewDto[]> {
     const workspaces = await this.workspaceRepo.findByUserId(currentUserId);
     return workspaces.map((workspace) => ({
@@ -89,7 +89,7 @@ export class WorkspaceService {
 
   async getWorkspaceForUser(
     currentUserId: string,
-    workspaceId: string,
+    workspaceId: string
   ): Promise<WorkspaceContextDto> {
     const workspace = await this.workspaceRepo.findById(workspaceId);
 
@@ -167,7 +167,7 @@ export class WorkspaceService {
 
     const isMember = await this.workspaceMemberRepo.isMember(
       workspaceId,
-      userId,
+      userId
     );
 
     if (!isMember) {
