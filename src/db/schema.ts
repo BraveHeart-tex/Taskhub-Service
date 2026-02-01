@@ -150,6 +150,7 @@ export const boardMembers = pgTable(
       table.boardId,
       table.userId
     ),
+    index('board_members_user_id').on(table.userId),
   ]
 );
 

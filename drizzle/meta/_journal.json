@@ -127,6 +127,13 @@
       "when": 1769885514001,
       "tag": "0017_mean_sleeper",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1769929193885,
+      "tag": "0018_faulty_the_captain",
+      "breakpoints": true
     }
   ]
 }
