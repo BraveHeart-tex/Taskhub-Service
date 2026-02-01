@@ -113,6 +113,10 @@ export const boards = pgTable(
     createdBy: uuid('created_by')
       .notNull()
       .references(() => users.id, { onDelete: 'set null' }),
+    archivedBy: uuid('archived_by').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    archivedAt: customTimestamp('archived_at'),
     createdAt: customTimestamp('created_at')
       .$defaultFn(() => sql`NOW()`)
       .notNull(),
@@ -167,6 +171,10 @@ export const lists = pgTable(
       scale: 10,
       mode: 'string',
     }).notNull(),
+    archivedBy: uuid('archived_by').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    archivedAt: customTimestamp('archived_at'),
     createdAt: customTimestamp('created_at')
       .$defaultFn(() => sql`NOW()`)
       .notNull(),
@@ -201,6 +209,10 @@ export const cards = pgTable(
     createdBy: uuid('created_by')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
+    archivedBy: uuid('archived_by').references(() => users.id, {
+      onDelete: 'set null',
+    }),
+    archivedAt: customTimestamp('archived_at'),
     createdAt: customTimestamp('created_at')
       .$defaultFn(() => sql`NOW()`)
       .notNull(),
