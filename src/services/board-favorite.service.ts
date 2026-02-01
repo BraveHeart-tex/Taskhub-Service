@@ -12,7 +12,7 @@ export class BoardFavoriteService {
     return this.boardFavoriteRepo.findByUserId(userId);
   }
   async addFavorite(userId: string, boardId: string) {
-    const isMember = await this.boardMemberRepo.isMember(userId, boardId);
+    const isMember = await this.boardMemberRepo.isMember(boardId, userId);
     if (!isMember) {
       throw new BoardAccessDeniedError();
     }
@@ -20,7 +20,7 @@ export class BoardFavoriteService {
     await this.boardFavoriteRepo.create(userId, boardId);
   }
   async removeFavorite(userId: string, boardId: string) {
-    const isMember = await this.boardMemberRepo.isMember(userId, boardId);
+    const isMember = await this.boardMemberRepo.isMember(boardId, userId);
     if (!isMember) {
       throw new BoardAccessDeniedError();
     }
