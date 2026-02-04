@@ -5,24 +5,43 @@ export class DashboardService {
   constructor(private readonly dashboardRepo: DashboardReadRepository) {}
 
   async getDashboard(userId: string): Promise<DashboardDto> {
-    const workspaces = await this.dashboardRepo.findWorkspacesByUser(userId);
-    const workspaceIds = workspaces.map((workspace) => workspace.id);
+    const rows = await this.dashboardRepo.getDashboardRows(userId);
 
-    const boards =
-      await this.dashboardRepo.findBoardsByWorkspaceIds(workspaceIds);
+    const workspacesMap = new Map<
+      string,
+      { id: string; name: string; role: 'owner' | 'admin' | 'member' }
+    >();
 
-    const favoriteBoardIds =
-      await this.dashboardRepo.findFavoriteBoardIdsByUser(userId);
+    const boards: DashboardDto['boards'] = [];
+    const favorites: string[] = [];
 
-    const favoriteSet = new Set(favoriteBoardIds);
+    for (const row of rows) {
+      if (!workspacesMap.has(row.workspaceId)) {
+        workspacesMap.set(row.workspaceId, {
+          id: row.workspaceId,
+          name: row.workspaceName,
+          role: row.role,
+        });
+      }
+
+      if (row.boardId) {
+        boards.push({
+          id: row.boardId,
+          title: row.boardTitle!,
+          workspaceId: row.workspaceId,
+          isFavorited: row.isFavorited !== null,
+        });
+
+        if (row.isFavorited) {
+          favorites.push(row.boardId);
+        }
+      }
+    }
 
     return {
-      workspaces,
-      favorites: favoriteBoardIds,
-      boards: boards.map((board) => ({
-        ...board,
-        isFavorited: favoriteSet.has(board.id),
-      })),
+      workspaces: Array.from(workspacesMap.values()),
+      boards,
+      favorites,
     };
   }
 }
