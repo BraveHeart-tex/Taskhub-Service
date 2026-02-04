@@ -17,12 +17,10 @@ const dashboardRoute: FastifyPluginAsyncZod = async (app) => {
         },
       },
     },
-    async (request, reply) => {
+    async (request) => {
       const { user } = requireAuth(request);
 
-      const result = await app.dashboardService.getDashboard(user.id);
-
-      return reply.send(result);
+      return await app.dashboardService.getDashboard(user.id);
     }
   );
 };
