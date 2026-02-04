@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 import { useDb } from '@/db/context';
 import {
   boardFavorites,
@@ -8,23 +8,33 @@ import {
 } from '@/db/schema';
 
 export class DashboardReadRepository {
-  async getDashboardRows(userId: string) {
+  async getUserWorkspaces(userId: string) {
     const db = useDb();
 
     return db
       .select({
-        workspaceId: workspaces.id,
-        workspaceName: workspaces.name,
+        id: workspaces.id,
+        name: workspaces.name,
         role: workspaceMembers.role,
-
-        boardId: boards.id,
-        boardTitle: boards.title,
-
-        isFavorited: boardFavorites.boardId,
       })
       .from(workspaceMembers)
       .innerJoin(workspaces, eq(workspaceMembers.workspaceId, workspaces.id))
-      .leftJoin(boards, eq(boards.workspaceId, workspaces.id))
+      .where(eq(workspaceMembers.userId, userId));
+  }
+
+  async getBoardsForWorkspaces(userId: string, workspaceIds: string[]) {
+    const db = useDb();
+
+    if (workspaceIds.length === 0) return [];
+
+    return db
+      .select({
+        workspaceId: boards.workspaceId,
+        id: boards.id,
+        title: boards.title,
+        isFavorited: boardFavorites.boardId,
+      })
+      .from(boards)
       .leftJoin(
         boardFavorites,
         and(
@@ -32,6 +42,6 @@ export class DashboardReadRepository {
           eq(boardFavorites.userId, userId)
         )
       )
-      .where(eq(workspaceMembers.userId, userId));
+      .where(inArray(boards.workspaceId, workspaceIds));
   }
 }
