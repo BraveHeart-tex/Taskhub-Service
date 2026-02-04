@@ -231,10 +231,10 @@ export const cards = pgTable(
 export const boardFavorites = pgTable(
   'board_favorites',
   {
-    boardId: uuid()
+    boardId: uuid('board_id')
       .notNull()
       .references(() => boards.id, { onDelete: 'cascade' }),
-    userId: uuid()
+    userId: uuid('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     createdAt: customTimestamp('created_at')

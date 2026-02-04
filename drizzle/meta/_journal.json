@@ -148,6 +148,13 @@
       "when": 1769968984322,
       "tag": "0020_clever_redwing",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1770227673876,
+      "tag": "0021_condemned_leper_queen",
+      "breakpoints": true
     }
   ]
 }
