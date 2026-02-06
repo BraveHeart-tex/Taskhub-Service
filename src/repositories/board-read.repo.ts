@@ -112,7 +112,7 @@ export class BoardReadRepository {
               listsRows.map((l) => l.id)
             )
           )
-          .orderBy(asc(cards.position))
+          .orderBy(desc(cards.position))
       : [];
 
     const cardsByList = new Map<string, typeof cardRows>();
