@@ -8,6 +8,7 @@ export interface GetBoardContextResponse {
     canDeleteBoard: boolean;
     canManageMembers: boolean;
   };
+  isFavorite: boolean;
 }
 
 export interface WorkspaceBoardPreviewDto {

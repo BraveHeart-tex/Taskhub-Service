@@ -17,14 +17,12 @@ const route: FastifyPluginAsyncZod = async (app) => {
         params: boardRouteParamsSchema,
       },
     },
-    async (request, reply) => {
+    async (request) => {
       const { user } = requireAuth(request);
 
       const { boardId } = request.params;
 
-      const result = await app.boardService.getBoardDetails(boardId, user.id);
-
-      return reply.status(HttpStatus.OK).send(result);
+      return await app.boardService.getBoardDetails(boardId, user.id);
     }
   );
 

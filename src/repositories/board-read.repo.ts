@@ -1,6 +1,13 @@
 import { and, asc, desc, eq, inArray, sql } from 'drizzle-orm';
 import { useDb } from '@/db/context';
-import { boardMembers, boards, cards, lists, users } from '@/db/schema';
+import {
+  boardFavorites,
+  boardMembers,
+  boards,
+  cards,
+  lists,
+  users,
+} from '@/db/schema';
 import { BoardMemberNotFoundError } from '@/domain/board/board-member/board-member.errors';
 
 export class BoardReadRepository {
@@ -13,6 +20,9 @@ export class BoardReadRepository {
         title: boards.title,
         workspaceId: boards.workspaceId,
         role: boardMembers.role,
+        isFavorite: sql<boolean>`
+          ${boardFavorites.userId} IS NOT NULL
+        `.as('is_favorite'),
       })
       .from(boards)
       .innerJoin(
@@ -20,6 +30,13 @@ export class BoardReadRepository {
         and(
           eq(boardMembers.boardId, boards.id),
           eq(boardMembers.userId, currentUserId)
+        )
+      )
+      .leftJoin(
+        boardFavorites,
+        and(
+          eq(boardFavorites.boardId, boards.id),
+          eq(boardFavorites.userId, currentUserId)
         )
       )
       .where(eq(boards.id, boardId))
@@ -43,6 +60,7 @@ export class BoardReadRepository {
         canDeleteBoard: isOwner,
         canManageMembers: isOwner,
       },
+      isFavorite: board.isFavorite,
     };
   }
   async getRecentBoardsForWorkspace(workspaceId: string, limit: number) {
