@@ -155,6 +155,13 @@
       "when": 1770227673876,
       "tag": "0021_condemned_leper_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1770749648004,
+      "tag": "0022_nostalgic_night_thrasher",
+      "breakpoints": true
     }
   ]
 }

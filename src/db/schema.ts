@@ -50,6 +50,8 @@ export const workspaces = pgTable(
   'workspaces',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    shortId: text('short_id').notNull().unique(),
+    slug: text('slug').notNull(),
     name: text('name').notNull(),
     ownerId: uuid('owner_id')
       .notNull()
@@ -65,6 +67,8 @@ export const workspaces = pgTable(
   (table) => [
     index('workspaces_owner_id_idx').on(table.ownerId),
     index('workspaces_owner_id_name_idx').on(table.ownerId, table.name),
+    uniqueIndex('workspaces_short_id_idx').on(table.shortId),
+    index('workspaces_slug_idx').on(table.slug),
   ]
 );
 
@@ -106,6 +110,8 @@ export const boards = pgTable(
   'boards',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    slug: text('slug').notNull(),
+    shortId: text('short_id').notNull().unique(),
     workspaceId: uuid('workspace_id')
       .notNull()
       .references(() => workspaces.id, { onDelete: 'cascade' }),
@@ -125,7 +131,11 @@ export const boards = pgTable(
       .notNull()
       .$onUpdateFn(() => sql`NOW()`),
   },
-  (table) => [index('boards_workspace_id').on(table.workspaceId)]
+  (table) => [
+    index('boards_workspace_id').on(table.workspaceId),
+    uniqueIndex('board_short_id_idx').on(table.shortId),
+    index('board_slug_idx').on(table.slug),
+  ]
 );
 
 const boardMemberRoleEnum = pgEnum('board_member_role', ['owner', 'member']);
@@ -162,6 +172,7 @@ export const lists = pgTable(
   'lists',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    shortId: text('short_id').notNull().unique(),
     boardId: uuid('board_id')
       .notNull()
       .references(() => boards.id, { onDelete: 'cascade' }),
@@ -189,6 +200,7 @@ export const lists = pgTable(
       table.boardId,
       table.position
     ),
+    uniqueIndex('lists_short_id_idx').on(table.shortId),
   ]
 );
 
@@ -196,6 +208,7 @@ export const cards = pgTable(
   'cards',
   {
     id: uuid('id').primaryKey().defaultRandom(),
+    shortId: text('short_id').notNull().unique(),
     listId: uuid('list_id')
       .notNull()
       .references(() => lists.id, { onDelete: 'cascade' }),
@@ -224,6 +237,7 @@ export const cards = pgTable(
   (table) => [
     index('cards_list_id').on(table.listId),
     uniqueIndex('cards_list_id_position_key').on(table.listId, table.position),
+    uniqueIndex('cards_short_id_idx').on(table.shortId),
     index('cards_created_by').on(table.createdBy),
   ]
 );
