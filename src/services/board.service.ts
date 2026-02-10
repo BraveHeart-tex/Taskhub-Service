@@ -1,4 +1,5 @@
-import type { BoardInsert, BoardRow } from '@/db/schema';
+import slugify from 'slugify';
+import type { BoardRow } from '@/db/schema';
 import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import {
@@ -8,10 +9,12 @@ import {
 } from '@/domain/board/board.errors';
 import type {
   BoardContentDto,
+  CreateBoardInput,
   GetBoardContextResponse,
   WorkspaceBoardPreviewDto,
 } from '@/domain/board/board.types';
 import { WorkspaceNotFoundError } from '@/domain/workspace/workspace.errors';
+import { generateShortId } from '@/lib/nanoid';
 import type { BoardRepository } from '@/repositories/board.repo';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { BoardReadRepository } from '@/repositories/board-read.repo';
@@ -26,7 +29,7 @@ export class BoardService {
     private readonly boardReadRepo: BoardReadRepository,
     private readonly workspaceMemberRepo: WorkspaceMemberRepository
   ) {}
-  async createBoard(values: BoardInsert): Promise<BoardRow> {
+  async createBoard(values: CreateBoardInput): Promise<BoardRow> {
     return withTransaction(async () => {
       const workspace = await this.workspaceRepo.findById(values.workspaceId);
       if (!workspace) {
@@ -49,7 +52,13 @@ export class BoardService {
         throw new BoardTitleAlreadyExistsError();
       }
 
-      const board = await this.boardRepo.create(values);
+      const board = await this.boardRepo.create({
+        createdBy: values.createdBy,
+        workspaceId: values.workspaceId,
+        title,
+        slug: slugify(title),
+        shortId: await generateShortId(),
+      });
 
       await this.boardMemberRepo.create({
         boardId: board.id,

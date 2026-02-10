@@ -3,15 +3,16 @@ import { BoardMemberNotFoundError } from '@/domain/board/board-member/board-memb
 import { ListNotFoundError } from '@/domain/board/list/list.errors';
 import { CardNotFoundError } from '@/domain/card/card.errors';
 import type {
-  CreateCardParams,
-  DeleteCardParams,
-  MoveCardParams,
-  UpdateCardParams,
+  CreateCardInput,
+  DeleteCardInput,
+  MoveCardInput,
+  UpdateCardInput,
 } from '@/domain/card/card.types';
 import {
   computeInsertAtTopPosition,
   computeNewPosition,
 } from '@/domain/positioning/ordering';
+import { generateShortId } from '@/lib/nanoid';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { CardRepository } from '@/repositories/card.repo';
 import type { ListRepository } from '@/repositories/list.repo';
@@ -29,7 +30,7 @@ export class CardService {
     description,
     listId,
     boardId,
-  }: CreateCardParams) {
+  }: CreateCardInput) {
     return withTransaction(async () => {
       const list = await this.listRepository.findById(listId);
       if (!list || list.boardId !== boardId) {
@@ -66,6 +67,7 @@ export class CardService {
         description,
         position: position.toString(),
         createdBy: currentUserId,
+        shortId: await generateShortId(),
       });
     });
   }
@@ -74,7 +76,7 @@ export class CardService {
     cardId,
     listId,
     boardId,
-  }: DeleteCardParams) {
+  }: DeleteCardInput) {
     return withTransaction(async () => {
       const card = await this.cardRepository.findById(cardId);
       if (!card || card.listId !== listId) {
@@ -104,7 +106,7 @@ export class CardService {
     boardId,
     title,
     description,
-  }: UpdateCardParams) {
+  }: UpdateCardInput) {
     return withTransaction(async () => {
       const card = await this.cardRepository.findById(cardId);
       if (!card || card.listId !== listId) {
@@ -137,7 +139,7 @@ export class CardService {
     targetListId,
     beforeCardId,
     afterCardId,
-  }: MoveCardParams) {
+  }: MoveCardInput) {
     return withTransaction(async () => {
       const isMember = await this.boardMemberRepository.isMember(
         boardId,

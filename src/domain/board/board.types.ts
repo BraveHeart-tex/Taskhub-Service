@@ -47,3 +47,9 @@ export interface BoardContentDto {
     }
   >;
 }
+
+export interface CreateBoardInput {
+  title: string;
+  workspaceId: string;
+  createdBy: string;
+}

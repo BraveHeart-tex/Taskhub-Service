@@ -8,7 +8,7 @@ export interface CardDto {
   updatedAt: string;
 }
 
-export interface CreateCardParams {
+export interface CreateCardInput {
   currentUserId: string;
   title: string;
   description?: string;
@@ -16,14 +16,14 @@ export interface CreateCardParams {
   boardId: string;
 }
 
-export interface DeleteCardParams {
+export interface DeleteCardInput {
   currentUserId: string;
   cardId: string;
   listId: string;
   boardId: string;
 }
 
-export interface UpdateCardParams {
+export interface UpdateCardInput {
   currentUserId: string;
   cardId: string;
   listId: string;
@@ -32,7 +32,7 @@ export interface UpdateCardParams {
   description?: string;
 }
 
-export interface MoveCardParams {
+export interface MoveCardInput {
   currentUserId: string;
   boardId: string;
   cardId: string;

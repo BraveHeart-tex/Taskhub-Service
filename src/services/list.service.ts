@@ -10,6 +10,7 @@ import {
   computeInsertAtBottomPosition,
   computeNewPosition,
 } from '@/domain/positioning/ordering';
+import { generateShortId } from '@/lib/nanoid';
 import type { BoardRepository } from '@/repositories/board.repo';
 import type { BoardMemberRepository } from '@/repositories/board-member.repo';
 import type { ListRepository } from '@/repositories/list.repo';
@@ -48,6 +49,7 @@ export class ListService {
         boardId,
         title,
         position: position.toString(),
+        shortId: await generateShortId(),
       });
     });
   }

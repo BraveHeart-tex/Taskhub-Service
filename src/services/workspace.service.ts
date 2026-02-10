@@ -1,16 +1,15 @@
-import type {
-  WorkspaceInsert,
-  WorkspaceRow,
-  WorkspaceUpdate,
-} from '@/db/schema';
+import slugify from 'slugify';
+import type { WorkspaceRow, WorkspaceUpdate } from '@/db/schema';
 import { withTransaction } from '@/db/transaction';
 import { UnauthorizedError } from '@/domain/auth/auth.errors';
 import { WorkspaceNotFoundError } from '@/domain/workspace/workspace.errors';
 import type {
+  CreateWorkspaceInput,
   WorkspaceContextDto,
   WorkspacePreviewDto,
 } from '@/domain/workspace/workspace.types';
 import { WorkspaceMemberNotFoundError } from '@/domain/workspace/workspace-member/workspace-member.errors';
+import { generateShortId } from '@/lib/nanoid';
 import type { BoardReadRepository } from '@/repositories/board-read.repo';
 import type { WorkspaceRepository } from '@/repositories/workspace.repo';
 import type { WorkspaceMemberRepository } from '@/repositories/workspace-member.repo';
@@ -24,9 +23,14 @@ export class WorkspaceService {
     private readonly boardReadRepo: BoardReadRepository
   ) {}
 
-  async createWorkspace(values: WorkspaceInsert) {
+  async createWorkspace(values: CreateWorkspaceInput) {
     return withTransaction(async () => {
-      const workspace = await this.workspaceRepo.create(values);
+      const workspace = await this.workspaceRepo.create({
+        name: values.name,
+        ownerId: values.ownerId,
+        slug: slugify(values.name),
+        shortId: await generateShortId(),
+      });
 
       await this.workspaceMemberRepo.create({
         workspaceId: workspace.id,

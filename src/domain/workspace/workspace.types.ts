@@ -13,7 +13,7 @@ export interface WorkspacePreviewDto {
   }[];
 }
 
-export type WorkspaceContextDto = {
+export interface WorkspaceContextDto {
   id: string;
   name: string;
   ownerId: string;
@@ -21,4 +21,9 @@ export type WorkspaceContextDto = {
   updatedAt: string;
   isCurrentUserOwner: boolean;
   role: 'owner' | 'member';
-};
+}
+
+export interface CreateWorkspaceInput {
+  name: string;
+  ownerId: string;
+}
